@@ -35,7 +35,6 @@ export default function Home() {
     >
       <div className="text-center text-white max-w-3xl w-full">
         
-        {/* Language Switcher */}
         <div className="flex justify-center gap-2 mb-8">
           {['ar', 'en', 'fr', 'ur', 'id'].map((l) => (
             <button
@@ -52,22 +51,18 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Logo */}
         <h1 className="text-5xl md:text-6xl font-bold mb-4">
           {t.title} <span className="text-amber-400">|</span> <span className="text-amber-400">Aaed</span>
         </h1>
 
-        {/* Slogan */}
         <p className="text-2xl md:text-3xl opacity-95 tracking-wide mb-8">
           {t.slogan}
         </p>
 
-        {/* Description */}
         <p className="text-base md:text-lg mb-10 opacity-80 max-w-xl mx-auto">
           {t.description}
         </p>
 
-        {/* Gates */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           
           <a 
@@ -85,9 +80,9 @@ export default function Home() {
             <div className="font-bold text-sm">{t.sanad}</div>
           </a>
 
-          <div 
-            className="bg-white/10 backdrop-blur p-4 rounded-xl opacity-60 cursor-not-allowed text-center"
-            title="قريباً"
+          <a 
+            href="/guide"
+            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center cursor-pointer"
           >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -96,7 +91,7 @@ export default function Home() {
               </svg>
             </div>
             <div className="font-bold text-sm">{t.guide}</div>
-          </div>
+          </a>
 
           <div 
             className="bg-white/10 backdrop-blur p-4 rounded-xl opacity-60 cursor-not-allowed text-center"
