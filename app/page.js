@@ -70,7 +70,10 @@ export default function Home() {
         {/* Gates */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           
-          <div className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition">
+          <a 
+            href="/sanad" 
+            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center cursor-pointer"
+          >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                 <rect x="3" y="8" width="18" height="12" rx="2"/>
@@ -80,9 +83,12 @@ export default function Home() {
               </svg>
             </div>
             <div className="font-bold text-sm">{t.sanad}</div>
-          </div>
+          </a>
 
-          <div className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition">
+          <div 
+            className="bg-white/10 backdrop-blur p-4 rounded-xl opacity-60 cursor-not-allowed text-center"
+            title="قريباً"
+          >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="8" r="4"/>
@@ -92,7 +98,10 @@ export default function Home() {
             <div className="font-bold text-sm">{t.guide}</div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition">
+          <div 
+            className="bg-white/10 backdrop-blur p-4 rounded-xl opacity-60 cursor-not-allowed text-center"
+            title="قريباً"
+          >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="9" cy="8" r="3"/>
@@ -104,7 +113,10 @@ export default function Home() {
             <div className="font-bold text-sm">{t.community}</div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition">
+          <div 
+            className="bg-white/10 backdrop-blur p-4 rounded-xl opacity-60 cursor-not-allowed text-center"
+            title="قريباً"
+          >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M4 4h12a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H4"/>
