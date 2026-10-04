@@ -1,80 +1,38 @@
 // app/guide/page.js
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/app/layout';
+import { getGuides } from '@/lib/supabase-client';
 
 export default function GuidePage() {
   const router = useRouter();
   const { lang, setLang, t } = useLanguage();
   const [selectedMentor, setSelectedMentor] = useState(null);
   const [specialtyFilter, setSpecialtyFilter] = useState('all');
-
-  const mentors = [
-    {
-      id: 1,
-      name: { ar: 'أحمد محمود', en: 'Ahmed Mahmoud', fr: 'Ahmed Mahmoud', ur: 'احمد محمود', id: 'Ahmed Mahmoud' },
-      avatar: 'أ',
-      country: { ar: 'السودان', en: 'Sudan', fr: 'Soudan', ur: 'سوڈان', id: 'Sudan' },
-      rating: 4.9,
-      languages: ['ar', 'en'],
-      specialty: 'family',
-      sessions: 25,
-      bio: {
-        ar: 'متخصص في الأسئلة الأسرية والاجتماعية للمسلمين الجدد.',
-        en: 'Specialized in family and social questions for new Muslims.',
-        fr: 'Spécialisé dans les questions familiales et sociales.',
-        ur: 'نئے مسلمانوں کے خاندانی اور سماجی سوالات میں ماہر۔',
-        id: 'Spesialis dalam pertanyaan keluarga dan sosial untuk mualaf.'
-      },
-    },
-    {
-      id: 2,
-      name: { ar: 'فاطمة علي', en: 'Fatima Ali', fr: 'Fatima Ali', ur: 'فاطمہ علی', id: 'Fatima Ali' },
-      avatar: 'ف',
-      country: { ar: 'مصر', en: 'Egypt', fr: 'Égypte', ur: 'مصر', id: 'Mesir' },
-      rating: 4.8,
-      languages: ['ar'],
-      specialty: 'psychology',
-      sessions: 18,
-      bio: {
-        ar: 'مرشدة نفسية متخصصة في دعم المسلمين الجدد والراجعين.',
-        en: 'Psychological counselor specialized in supporting new Muslims.',
-        fr: 'Conseillère psychologique spécialisée dans le soutien aux nouveaux musulmans.',
-        ur: 'نئے مسلمانوں کی مدد میں ماہر نفسیاتی مشیر۔',
-        id: 'Konselor psikologis yang berspesialisasi dalam mendukung mualaf.'
-      },
-    },
-    {
-      id: 3,
-      name: { ar: 'محمد الحسن', en: 'Mohammed Al-Hassan', fr: 'Mohammed Al-Hassan', ur: 'محمد الحسن', id: 'Mohammed Al-Hassan' },
-      avatar: 'م',
-      country: { ar: 'السعودية', en: 'Saudi Arabia', fr: 'Arabie Saoudite', ur: 'سعودی عرب', id: 'Arab Saudi' },
-      rating: 5.0,
-      languages: ['ar', 'en', 'ur'],
-      specialty: 'fiqh',
-      sessions: 42,
-      bio: {
-        ar: 'طالب علم متخصص في الفقه والعقيدة. يجيب من المصادر المعتمدة.',
-        en: 'Student of knowledge specialized in Fiqh and Aqeedah.',
-        fr: 'Étudiant en sciences islamiques spécialisé en Fiqh et Aqeedah.',
-        ur: 'فقہ اور عقیدہ میں ماہر طالب علم۔',
-        id: 'Pelajar ilmu yang berspesialisasi dalam Fiqh dan Aqeedah.'
-      },
-    },
-  ];
+  const [mentors, setMentors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const isRTL = lang === 'ar' || lang === 'ur';
 
-  const filteredMentors = specialtyFilter === 'all'
-    ? mentors
-    : mentors.filter((m) => m.specialty === specialtyFilter);
-
-  const getSpecialtyLabel = (key) => {
-    return t.guide.specialties[key] || key;
-  };
+  useEffect(() => {
+    async function load() {
+      try {
+        const filters = {};
+        if (specialtyFilter !== 'all') filters.specialty = specialtyFilter;
+        const data = await getGuides(filters);
+        console.log('[guide-list] Loaded:', data);
+        setMentors(data || []);
+      } catch (err) {
+        console.error('[guide-list] Error:', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    load();
+  }, [specialtyFilter]);
 
   const getLanguageLabel = (code) => {
     const labels = {
@@ -89,7 +47,6 @@ export default function GuidePage() {
 
   return (
     <main dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex flex-col">
-      
       <header className="bg-teal-900 text-white p-4 flex items-center justify-between shadow-lg">
         <Link href="/" className="text-2xl">→</Link>
         <div className="text-xl font-bold">
@@ -111,9 +68,7 @@ export default function GuidePage() {
       </header>
 
       <div className="flex-1 overflow-y-auto p-4">
-        <p className="text-white/80 text-center mb-6 text-sm">
-          {t.guide.subtitle}
-        </p>
+        <p className="text-white/80 text-center mb-6 text-sm">{t.guide.subtitle}</p>
 
         <div className="max-w-2xl mx-auto mb-6">
           <select
@@ -130,46 +85,53 @@ export default function GuidePage() {
         </div>
 
         <div className="max-w-2xl mx-auto space-y-4">
-          {filteredMentors.length === 0 ? (
+          {loading ? (
+            <div className="bg-white rounded-2xl p-6 text-center text-slate-500">
+              {t.guide.loading}
+            </div>
+          ) : mentors.length === 0 ? (
             <div className="bg-white rounded-2xl p-6 text-center text-slate-600">
               {t.guide.no_results}
             </div>
           ) : (
-            filteredMentors.map((mentor) => (
+            mentors.map((mentor) => (
               <div key={mentor.id} className="bg-white rounded-2xl p-5 shadow-lg">
                 <div className="flex items-start gap-4 mb-4">
                   <div className="w-14 h-14 rounded-full bg-teal-600 text-white flex items-center justify-center text-xl font-bold flex-shrink-0">
-                    {mentor.avatar}
+                    {mentor.avatar_initial || mentor.name?.[0] || '?'}
                   </div>
                   <div className="flex-1">
-                    <div className="font-bold text-lg text-slate-800">
-                      {mentor.name[lang] || mentor.name.ar}
-                    </div>
+                    <div className="font-bold text-lg text-slate-800">{mentor.name}</div>
                     <div className="text-sm text-slate-500 flex items-center gap-3 mt-1 flex-wrap">
-                      <span>📍 {mentor.country[lang] || mentor.country.ar}</span>
-                      <span>⭐ {mentor.rating}/5</span>
-                      <span>💬 {mentor.sessions} {t.guide.sessions}</span>
+                      {mentor.country && <span>📍 {mentor.country}</span>}
+                      <span>⭐ {mentor.rating || 5}/5</span>
+                      <span>💬 {mentor.sessions_count || 0} {t.guide.sessions}</span>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-sm text-slate-600 mb-4 leading-relaxed">
-                  {mentor.bio[lang] || mentor.bio.ar}
-                </p>
+                {mentor.bio && (
+                  <p className="text-sm text-slate-600 mb-4 leading-relaxed">{mentor.bio}</p>
+                )}
 
                 <div className="flex flex-wrap gap-2 mb-4">
-                  {mentor.languages.map((code, i) => (
+                  {(mentor.languages || []).map((code, i) => (
                     <span key={i} className="bg-slate-100 text-teal-700 px-3 py-1 rounded-full text-xs font-medium">
                       {getLanguageLabel(code)}
                     </span>
                   ))}
-                  <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-medium">
-                    {getSpecialtyLabel(mentor.specialty)}
-                  </span>
+                  {mentor.specialty && (
+                    <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-medium">
+                      {t.guide.specialties[mentor.specialty] || mentor.specialty}
+                    </span>
+                  )}
                 </div>
 
                 <button
-                  onClick={() => setSelectedMentor(mentor)}
+                  onClick={() => {
+                    console.log('[guide-list] Selected:', mentor.id);
+                    setSelectedMentor(mentor);
+                  }}
                   className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-bold transition"
                 >
                   {t.guide.start_chat}
@@ -182,7 +144,7 @@ export default function GuidePage() {
         <div className="max-w-2xl mx-auto mt-6 bg-white/10 backdrop-blur rounded-2xl p-5 text-white text-sm">
           <div className="font-bold mb-2">💡 {t.guide.how_it_works}</div>
           <ul className="list-disc pr-5 space-y-1 opacity-90">
-            {t.guide.points.map((point, i) => (
+            {(t.guide.points || []).map((point, i) => (
               <li key={i}>{point}</li>
             ))}
           </ul>
@@ -200,13 +162,14 @@ export default function GuidePage() {
           >
             <div className="text-center mb-6">
               <div className="w-16 h-16 rounded-full bg-teal-600 text-white flex items-center justify-center text-2xl font-bold mx-auto mb-3">
-                {selectedMentor.avatar}
+                {selectedMentor.avatar_initial || selectedMentor.name?.[0] || '?'}
               </div>
-              <div className="font-bold text-xl text-slate-800 mb-1">
-                {selectedMentor.name[lang] || selectedMentor.name.ar}
-              </div>
+              <div className="font-bold text-xl text-slate-800 mb-1">{selectedMentor.name}</div>
               <div className="text-sm text-slate-500">
-                {selectedMentor.country[lang] || selectedMentor.country.ar} · ⭐ {selectedMentor.rating}/5
+                {selectedMentor.country} · ⭐ {selectedMentor.rating || 5}/5
+              </div>
+              <div className="text-xs text-slate-400 mt-2 font-mono">
+                ID: {selectedMentor.id}
               </div>
             </div>
 
@@ -223,7 +186,11 @@ export default function GuidePage() {
                 {t.guide.modal.cancel}
               </button>
               <button
-                onClick={() => router.push(`/guide/${selectedMentor.id}`)}
+                onClick={() => {
+                  const url = `/guide/${selectedMentor.id}`;
+                  console.log('[guide-list] Navigate to:', url);
+                  router.push(url);
+                }}
                 className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-bold transition"
               >
                 {t.guide.modal.confirm}
@@ -232,7 +199,6 @@ export default function GuidePage() {
           </div>
         </div>
       )}
-
     </main>
   );
 }

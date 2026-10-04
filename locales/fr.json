@@ -34,7 +34,24 @@
     "back_home": "← Retour à l'accueil",
     "signup_success": "Compte créé!",
     "signup_success_msg": "Redirection vers la connexion...",
-    "password_too_short": "Le mot de passe doit contenir au moins 6 caractères"
+    "password_too_short": "Le mot de passe doit contenir au moins 6 caractères",
+    "forgot_password": "Mot de passe oublié?",
+    "forgot_password_title": "Réinitialiser le mot de passe",
+    "forgot_password_subtitle": "Entrez votre email et nous vous enverrons un lien de réinitialisation",
+    "send_reset_link": "Envoyer le lien",
+    "back_to_login": "← Retour à la connexion",
+    "reset_sent_title": "Lien envoyé!",
+    "reset_sent_desc": "Vérifiez votre email — vous y trouverez un lien pour réinitialiser votre mot de passe.",
+    "spam_note": "Vous ne le voyez pas? Vérifiez vos spams.",
+    "new_password_title": "Nouveau mot de passe",
+    "new_password_subtitle": "Entrez votre nouveau mot de passe",
+    "new_password_label": "Nouveau mot de passe",
+    "confirm_password_label": "Confirmer le mot de passe",
+    "confirm_password_placeholder": "Tapez-le à nouveau",
+    "update_password": "Mettre à jour",
+    "password_updated_title": "Mot de passe mis à jour!",
+    "password_updated_desc": "Redirection vers la connexion...",
+    "passwords_not_match": "Les mots de passe ne correspondent pas"
   },
   "guide": {
     "title": "Le Guide",
@@ -64,7 +81,11 @@
       "confirm": "Confirmer la réservation"
     },
     "no_results": "Aucun guide ne correspond.",
-    "login_required": "Vous devez vous connecter pour contacter le guide"
+    "login_required": "Vous devez vous connecter pour contacter le guide",
+    "welcome_message": "Que la paix soit sur vous! Je suis {name}, je vous aiderai avec {specialty}. Comment puis-je vous aider?",
+    "chat_placeholder": "Écrivez votre message...",
+    "send": "Envoyer",
+    "loading": "Chargement..."
   },
   "community": {
     "title": "Communauté",
@@ -86,6 +107,22 @@
     "edit": "Modifier",
     "delete": "Supprimer",
     "save": "Enregistrer",
+    "repost": "Republier",
+    "show_original": "Voir l'original",
+    "show_translation": "Voir la traduction",
+    "translate_note": "Votre post sera auto-traduit dans toutes les langues",
+    "copy_link": "Copier le lien",
+    "send_in_message": "Envoyer en message",
+    "add_note": "Ajouter une note (optionnel)...",
+    "back": "Retour",
+    "user_posts": "Publications",
+    "profile_not_found": "Utilisateur introuvable",
+    "time_ago": {
+      "now": "maintenant",
+      "min": "min",
+      "hour": "h",
+      "day": "j"
+    },
     "categories": {
       "all": "Tous",
       "general": "Général",
@@ -163,5 +200,14 @@
     "type_message": "Écrivez votre message...",
     "send": "Envoyer",
     "loading": "Chargement..."
+  },
+  "sanad": {
+    "title": "Sanad",
+    "initial_message": "Que la paix soit sur vous! Je suis Sanad, votre compagnon sur le chemin du retour. Comment puis-je vous aider aujourd'hui?",
+    "input_placeholder": "Écrivez votre message...",
+    "send": "Envoyer",
+    "loading": "Sanad écrit...",
+    "error": "Une erreur s'est produite lors du traitement de votre question. Veuillez réessayer.",
+    "source_label": "Source"
   }
 }

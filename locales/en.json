@@ -34,7 +34,24 @@
     "back_home": "← Back to home",
     "signup_success": "Account created!",
     "signup_success_msg": "Redirecting to login...",
-    "password_too_short": "Password must be at least 6 characters"
+    "password_too_short": "Password must be at least 6 characters",
+    "forgot_password": "Forgot Password?",
+    "forgot_password_title": "Reset Password",
+    "forgot_password_subtitle": "Enter your email and we'll send you a reset link",
+    "send_reset_link": "Send Reset Link",
+    "back_to_login": "← Back to Login",
+    "reset_sent_title": "Link Sent!",
+    "reset_sent_desc": "Check your email — you'll find a link to reset your password.",
+    "spam_note": "Don't see it? Check your Spam folder.",
+    "new_password_title": "New Password",
+    "new_password_subtitle": "Enter your new password",
+    "new_password_label": "New Password",
+    "confirm_password_label": "Confirm Password",
+    "confirm_password_placeholder": "Type it again",
+    "update_password": "Update Password",
+    "password_updated_title": "Password Updated!",
+    "password_updated_desc": "Redirecting to login...",
+    "passwords_not_match": "Passwords don't match"
   },
   "guide": {
     "title": "The Guide",
@@ -64,7 +81,11 @@
       "confirm": "Confirm Booking"
     },
     "no_results": "No guide matches your search.",
-    "login_required": "You must login to contact the guide"
+    "login_required": "You must login to contact the guide",
+    "welcome_message": "Peace be upon you! I am {name}, I will help you with {specialty}. How can I help?",
+    "chat_placeholder": "Type your message...",
+    "send": "Send",
+    "loading": "Loading..."
   },
   "community": {
     "title": "Community",
@@ -86,6 +107,22 @@
     "edit": "Edit",
     "delete": "Delete",
     "save": "Save",
+    "repost": "Repost",
+    "show_original": "Show Original",
+    "show_translation": "Show Translation",
+    "translate_note": "Your post will be auto-translated to all languages",
+    "copy_link": "Copy Link",
+    "send_in_message": "Send in Message",
+    "add_note": "Add a note (optional)...",
+    "back": "Back",
+    "user_posts": "User posts",
+    "profile_not_found": "User not found",
+    "time_ago": {
+      "now": "now",
+      "min": "m",
+      "hour": "h",
+      "day": "d"
+    },
     "categories": {
       "all": "All",
       "general": "General",
@@ -163,5 +200,14 @@
     "type_message": "Type your message...",
     "send": "Send",
     "loading": "Loading..."
+  },
+  "sanad": {
+    "title": "Sanad",
+    "initial_message": "Peace be upon you! I am Sanad, your companion on the journey back. How can I help you today?",
+    "input_placeholder": "Type your message...",
+    "send": "Send",
+    "loading": "Sanad is typing...",
+    "error": "An error occurred while processing your question. Please try again.",
+    "source_label": "Source"
   }
 }

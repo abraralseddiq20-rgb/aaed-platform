@@ -97,6 +97,11 @@ export default function LoginPage() {
               className="w-full p-3 border border-slate-300 rounded-xl focus:outline-none focus:border-teal-500 text-slate-800"
               dir="ltr"
             />
+            <div className="text-right mt-2">
+              <Link href="/forgot-password" className="text-xs text-teal-600 hover:underline">
+                نسيت كلمة المرور؟
+              </Link>
+            </div>
           </div>
 
           <button

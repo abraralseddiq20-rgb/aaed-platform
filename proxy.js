@@ -6,7 +6,7 @@ export async function proxy(request) {
   const { pathname } = request.nextUrl;
 
   // الصفحات العامة
-  const publicPaths = ['/login', '/signup'];
+  const publicPaths = ['/login', '/signup', '/forgot-password', '/reset-password'];
   if (publicPaths.some((p) => pathname === p || pathname.startsWith(p + '/'))) {
     return NextResponse.next();
   }

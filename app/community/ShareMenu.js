@@ -9,7 +9,7 @@ import { LinkIcon, RepostIcon, MessageIcon, CheckIcon } from './Icons';
 
 export default function ShareMenu({ post, user, onClose, onRepost }) {
   const router = useRouter();
-  const { t } = useLanguage();
+  const { lang, t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [showRepost, setShowRepost] = useState(false);
   const [repostNote, setRepostNote] = useState('');
@@ -30,7 +30,7 @@ export default function ShareMenu({ post, user, onClose, onRepost }) {
     if (!user) return;
     setProcessing(true);
     try {
-      const newPost = await repost(post.id, user.id, repostNote.trim());
+      const newPost = await repost(post.id, user.id, repostNote.trim(), lang);
       newPost.author = { id: user.id, name: 'أنت', avatar_initial: 'U' };
       onRepost(newPost);
       onClose();
@@ -49,7 +49,7 @@ export default function ShareMenu({ post, user, onClose, onRepost }) {
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="bg-white rounded-2xl p-4 max-w-md w-full" onClick={(e) => e.stopPropagation()}>
-        <div className="text-center font-bold text-lg mb-4">مشاركة</div>
+        <div className="text-center font-bold text-lg mb-4">{t.community.share}</div>
 
         {!showRepost ? (
           <div className="space-y-2">
@@ -58,7 +58,7 @@ export default function ShareMenu({ post, user, onClose, onRepost }) {
               className="w-full bg-slate-100 hover:bg-slate-200 p-3 rounded-xl text-right flex items-center gap-3 transition"
             >
               {copied ? <CheckIcon size={22} className="text-green-600" /> : <LinkIcon size={22} />}
-              <span className="font-medium">{copied ? 'تم النسخ!' : 'نسخ الرابط'}</span>
+              <span className="font-medium">{copied ? '✓' : t.community.copy_link}</span>
             </button>
 
             <button
@@ -66,7 +66,7 @@ export default function ShareMenu({ post, user, onClose, onRepost }) {
               className="w-full bg-slate-100 hover:bg-slate-200 p-3 rounded-xl text-right flex items-center gap-3 transition"
             >
               <RepostIcon size={22} />
-              <span className="font-medium">إعادة نشر</span>
+              <span className="font-medium">{t.community.repost}</span>
             </button>
 
             {post.author_id !== user?.id && (
@@ -75,7 +75,7 @@ export default function ShareMenu({ post, user, onClose, onRepost }) {
                 className="w-full bg-slate-100 hover:bg-slate-200 p-3 rounded-xl text-right flex items-center gap-3 transition"
               >
                 <MessageIcon size={22} />
-                <span className="font-medium">إرسال في رسالة</span>
+                <span className="font-medium">{t.community.send_in_message}</span>
               </button>
             )}
 
@@ -83,7 +83,7 @@ export default function ShareMenu({ post, user, onClose, onRepost }) {
               onClick={onClose}
               className="w-full bg-slate-200 hover:bg-slate-300 p-3 rounded-xl font-bold transition mt-2"
             >
-              إلغاء
+              {t.community.cancel}
             </button>
           </div>
         ) : (
@@ -91,7 +91,7 @@ export default function ShareMenu({ post, user, onClose, onRepost }) {
             <textarea
               value={repostNote}
               onChange={(e) => setRepostNote(e.target.value)}
-              placeholder="أضف تعليقاً (اختياري)..."
+              placeholder={t.community.add_note}
               rows={3}
               className="w-full p-3 border rounded-xl resize-none text-sm"
             />
@@ -100,14 +100,14 @@ export default function ShareMenu({ post, user, onClose, onRepost }) {
                 onClick={() => setShowRepost(false)}
                 className="flex-1 bg-slate-200 p-2 rounded-lg font-bold"
               >
-                رجوع
+                {t.community.back}
               </button>
               <button
                 onClick={handleRepost}
                 disabled={processing}
                 className="flex-1 bg-teal-600 text-white p-2 rounded-lg font-bold disabled:opacity-50"
               >
-                {processing ? '...' : 'نشر'}
+                {processing ? '...' : t.community.post_button}
               </button>
             </div>
           </div>

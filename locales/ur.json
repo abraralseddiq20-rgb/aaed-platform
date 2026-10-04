@@ -34,7 +34,24 @@
     "back_home": "← مرکزی صفحہ",
     "signup_success": "اکاؤنٹ بن گیا!",
     "signup_success_msg": "لاگ ان پر بھیجا جا رہا ہے...",
-    "password_too_short": "پاس ورڈ کم از کم 6 حروف کا ہونا چاہیے"
+    "password_too_short": "پاس ورڈ کم از کم 6 حروف کا ہونا چاہیے",
+    "forgot_password": "پاس ورڈ بھول گئے؟",
+    "forgot_password_title": "پاس ورڈ ری سیٹ کریں",
+    "forgot_password_subtitle": "اپنا ای میل درج کریں اور ہم آپ کو ری سیٹ لنک بھیجیں گے",
+    "send_reset_link": "ری سیٹ لنک بھیجیں",
+    "back_to_login": "← لاگ ان پر واپس",
+    "reset_sent_title": "لنک بھیج دیا گیا!",
+    "reset_sent_desc": "اپنا ای میل چیک کریں — آپ کو پاس ورڈ ری سیٹ کرنے کا لنک ملے گا۔",
+    "spam_note": "نہیں ملا؟ اپنا Spam فولڈر چیک کریں۔",
+    "new_password_title": "نیا پاس ورڈ",
+    "new_password_subtitle": "اپنا نیا پاس ورڈ درج کریں",
+    "new_password_label": "نیا پاس ورڈ",
+    "confirm_password_label": "پاس ورڈ کی تصدیق",
+    "confirm_password_placeholder": "دوبارہ لکھیں",
+    "update_password": "پاس ورڈ اپ ڈیٹ کریں",
+    "password_updated_title": "پاس ورڈ اپ ڈیٹ ہو گیا!",
+    "password_updated_desc": "لاگ ان پر بھیجا جا رہا ہے...",
+    "passwords_not_match": "پاس ورڈ مماثل نہیں ہیں"
   },
   "guide": {
     "title": "مرشد",
@@ -64,7 +81,11 @@
       "confirm": "بکنگ کی تصدیق کریں"
     },
     "no_results": "آپ کی تلاش سے کوئی مرشد مطابقت نہیں رکھتا۔",
-    "login_required": "مرشد سے رابطہ کرنے کے لیے لاگ ان ضروری ہے"
+    "login_required": "مرشد سے رابطہ کرنے کے لیے لاگ ان ضروری ہے",
+    "welcome_message": "السلام علیکم! میں {name} ہوں، میں {specialty} میں آپ کی مدد کروں گا۔ کیسے مدد کر سکتا ہوں؟",
+    "chat_placeholder": "اپنا پیغام لکھیں...",
+    "send": "بھیجیں",
+    "loading": "لوڈ ہو رہا ہے..."
   },
   "community": {
     "title": "کمیونٹی",
@@ -86,6 +107,22 @@
     "edit": "ترمیم",
     "delete": "حذف",
     "save": "محفوظ",
+    "repost": "دوبارہ پوسٹ",
+    "show_original": "اصل دیکھیں",
+    "show_translation": "ترجمہ دیکھیں",
+    "translate_note": "آپ کی پوسٹ تمام زبانوں میں خودکار ترجمہ ہو گی",
+    "copy_link": "لنک کاپی کریں",
+    "send_in_message": "پیغام میں بھیجیں",
+    "add_note": "نوٹ شامل کریں (اختیاری)...",
+    "back": "واپس",
+    "user_posts": "صارف کی پوسٹس",
+    "profile_not_found": "صارف نہیں ملا",
+    "time_ago": {
+      "now": "ابھی",
+      "min": " منٹ",
+      "hour": " گھنٹے",
+      "day": " دن"
+    },
     "categories": {
       "all": "سب",
       "general": "عام",
@@ -163,5 +200,14 @@
     "type_message": "اپنا پیغام لکھیں...",
     "send": "بھیجیں",
     "loading": "لوڈ ہو رہا ہے..."
+  },
+  "sanad": {
+    "title": "سند",
+    "initial_message": "السلام علیکم! میں سند ہوں، واپسی کے سفر میں آپ کا ساتھی۔ آج کیسے مدد کر سکتا ہوں؟",
+    "input_placeholder": "اپنا پیغام لکھیں...",
+    "send": "بھیجیں",
+    "loading": "سند لکھ رہا ہے...",
+    "error": "آپ کے سوال پر کارروائی کے دوران ایک خرابی پیش آئی۔ دوبارہ کوشش کریں۔",
+    "source_label": "ماخذ"
   }
 }

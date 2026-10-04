@@ -21,13 +21,13 @@ export default function PostEditor({ user, profile, onPost }) {
     if (!file) return;
 
     if (file.size > 50 * 1024 * 1024) {
-      setError('الملف كبير جداً (الحد الأقصى 50 MB)');
+      setError('File too large (max 50 MB)');
       return;
     }
 
     const type = file.type.startsWith('image/') ? 'image' : file.type.startsWith('video/') ? 'video' : null;
     if (!type) {
-      setError('نوع الملف غير مدعوم');
+      setError('Unsupported file type');
       return;
     }
 
@@ -59,7 +59,7 @@ export default function PostEditor({ user, profile, onPost }) {
 
       const post = await createPost(
         user.id,
-        content.trim() || (mediaType === 'video' ? '[فيديو]' : '[صورة]'),
+        content.trim() || (mediaType === 'video' ? '[Video]' : '[Image]'),
         category,
         lang,
         mediaUrl,
@@ -79,7 +79,7 @@ export default function PostEditor({ user, profile, onPost }) {
       removeMedia();
     } catch (err) {
       console.error(err);
-      setError(err.message || 'فشل النشر');
+      setError(err.message || 'Post failed');
     } finally {
       setPosting(false);
     }
@@ -111,7 +111,7 @@ export default function PostEditor({ user, profile, onPost }) {
               <button
                 onClick={removeMedia}
                 className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white w-8 h-8 rounded-full flex items-center justify-center"
-                title="إزالة"
+                title="Remove"
               >
                 <XIcon size={16} />
               </button>
@@ -158,7 +158,7 @@ export default function PostEditor({ user, profile, onPost }) {
 
           <div className="text-xs text-slate-400 mt-2 flex items-center gap-1">
             <GlobeIcon size={12} />
-            <span>سيتم ترجمة منشورك تلقائياً لجميع اللغات</span>
+            <span>{t.community.translate_note}</span>
           </div>
         </div>
       </div>

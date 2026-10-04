@@ -34,7 +34,24 @@
     "back_home": "← الرجوع للرئيسية",
     "signup_success": "تم إنشاء حسابك!",
     "signup_success_msg": "سيتم تحويلك لصفحة الدخول...",
-    "password_too_short": "كلمة المرور يجب أن تكون 6 أحرف على الأقل"
+    "password_too_short": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+    "forgot_password": "نسيت كلمة المرور؟",
+    "forgot_password_title": "استعادة كلمة المرور",
+    "forgot_password_subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابط لإعادة التعيين",
+    "send_reset_link": "إرسال رابط الاستعادة",
+    "back_to_login": "← الرجوع لتسجيل الدخول",
+    "reset_sent_title": "تم إرسال الرابط!",
+    "reset_sent_desc": "تفقد بريدك الإلكتروني — ستجد رسالة فيها رابط لإعادة تعيين كلمة المرور.",
+    "spam_note": "لم تجد الرسالة؟ تفقد مجلد Spam.",
+    "new_password_title": "كلمة مرور جديدة",
+    "new_password_subtitle": "أدخل كلمة المرور الجديدة",
+    "new_password_label": "كلمة المرور الجديدة",
+    "confirm_password_label": "تأكيد كلمة المرور",
+    "confirm_password_placeholder": "أعد كتابتها",
+    "update_password": "تحديث كلمة المرور",
+    "password_updated_title": "تم تحديث كلمة المرور!",
+    "password_updated_desc": "سيتم تحويلك لصفحة الدخول...",
+    "passwords_not_match": "كلمتا المرور غير متطابقتين"
   },
   "guide": {
     "title": "المرشد",
@@ -64,7 +81,11 @@
       "confirm": "تأكيد الحجز"
     },
     "no_results": "لا يوجد مرشد يطابق بحثك. جرّب تغيير الفلاتر.",
-    "login_required": "يجب تسجيل الدخول للتواصل مع المرشد"
+    "login_required": "يجب تسجيل الدخول للتواصل مع المرشد",
+    "welcome_message": "السلام عليكم! أنا {name}، سأساعدك في {specialty}. كيف أقدر أساعدك؟",
+    "chat_placeholder": "اكتب رسالتك...",
+    "send": "إرسال",
+    "loading": "جاري التحميل..."
   },
   "community": {
     "title": "المجتمع",
@@ -86,6 +107,22 @@
     "edit": "تعديل",
     "delete": "حذف",
     "save": "حفظ",
+    "repost": "إعادة نشر",
+    "show_original": "عرض النص الأصلي",
+    "show_translation": "عرض الترجمة",
+    "translate_note": "سيتم ترجمة منشورك تلقائياً لجميع اللغات",
+    "copy_link": "نسخ الرابط",
+    "send_in_message": "إرسال في رسالة",
+    "add_note": "أضف تعليقاً (اختياري)...",
+    "back": "رجوع",
+    "user_posts": "منشورات المستخدم",
+    "profile_not_found": "المستخدم غير موجود",
+    "time_ago": {
+      "now": "الآن",
+      "min": " د",
+      "hour": " س",
+      "day": " ي"
+    },
     "categories": {
       "all": "الكل",
       "general": "عام",
@@ -163,5 +200,14 @@
     "type_message": "اكتب رسالتك...",
     "send": "إرسال",
     "loading": "جاري التحميل..."
+  },
+  "sanad": {
+    "title": "سند",
+    "initial_message": "السلام عليكم! أنا سند، رفيقك في رحلة العودة. كيف أساعدك اليوم؟",
+    "input_placeholder": "اكتب رسالتك...",
+    "send": "إرسال",
+    "loading": "سند يكتب...",
+    "error": "حدث خطأ أثناء معالجة سؤالك. حاول مرة أخرى بعد قليل.",
+    "source_label": "المصدر"
   }
 }

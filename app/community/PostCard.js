@@ -2,6 +2,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useLanguage } from '@/app/layout';
 import { toggleLike, getComments, addComment, deletePost, updatePost } from '@/lib/supabase-client';
 import { HeartIcon, CommentIcon, ShareIcon, EditIcon, TrashIcon, GlobeIcon } from './Icons';
@@ -28,7 +29,6 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
   };
 
   const hasTranslation = post.language !== lang && post.translations?.[lang];
-  const canShowOriginal = hasTranslation && !showOriginal;
 
   useEffect(() => {
     if (showComments && comments.length === 0) {
@@ -59,7 +59,7 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
     if (!commentText.trim() || !user) return;
     try {
       const c = await addComment(post.id, user.id, commentText.trim(), lang);
-      c.author = { id: user.id, name: profile?.name || 'أنت', avatar_initial: profile?.avatar_initial || 'U' };
+      c.author = { id: user.id, name: 'أنت', avatar_initial: 'U' };
       setComments([...comments, c]);
       setCommentText('');
     } catch (err) {
@@ -76,7 +76,7 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
   };
 
   const handleDeletePost = async () => {
-    if (!confirm(t.community.confirm_delete || 'حذف المنشور؟')) return;
+    if (!confirm(t.community.confirm_delete)) return;
     try {
       await deletePost(post.id, user.id);
       onDelete(post.id);
@@ -99,11 +99,12 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
   const timeAgo = (date) => {
     const diff = Date.now() - new Date(date).getTime();
     const mins = Math.floor(diff / 60000);
-    if (mins < 1) return 'الآن';
-    if (mins < 60) return `${mins} د`;
+    const ta = t.community.time_ago || {};
+    if (mins < 1) return ta.now || 'now';
+    if (mins < 60) return `${mins}${ta.min || 'm'}`;
     const hours = Math.floor(mins / 60);
-    if (hours < 24) return `${hours} س`;
-    return `${Math.floor(hours / 24)} ي`;
+    if (hours < 24) return `${hours}${ta.hour || 'h'}`;
+    return `${Math.floor(hours / 24)}${ta.day || 'd'}`;
   };
 
   const rootComments = comments.filter((c) => !c.parent_comment_id);
@@ -115,14 +116,22 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
           {post.author?.avatar_initial || 'U'}
         </div>
         <div className="flex-1">
-          <div className="font-bold text-slate-800 text-sm">
+          <Link
+            href={`/profile/${post.author_id}`}
+            className="font-bold text-slate-800 text-sm hover:text-teal-600 transition"
+          >
             {post.author?.name || 'User'}
-          </div>
+          </Link>
           <div className="text-xs text-slate-500 flex gap-2 flex-wrap">
             {post.author?.country && <span>{post.author.country}</span>}
             <span>·</span>
             <span>{timeAgo(post.created_at)}</span>
-            {post.reposted_from_id && <span>· إعادة نشر</span>}
+            {post.reposted_from_id && (
+              <>
+                <span>·</span>
+                <span>{t.community.repost}</span>
+              </>
+            )}
           </div>
         </div>
         <span className="bg-slate-100 text-slate-600 px-2 py-1 rounded-full text-xs">
@@ -130,10 +139,10 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
         </span>
         {isOwner && !editing && (
           <div className="flex gap-2 text-slate-400">
-            <button onClick={() => setEditing(true)} className="hover:text-teal-600 transition" title="تعديل">
+            <button onClick={() => setEditing(true)} className="hover:text-teal-600 transition" title={t.community.edit}>
               <EditIcon size={16} />
             </button>
-            <button onClick={handleDeletePost} className="hover:text-red-500 transition" title="حذف">
+            <button onClick={handleDeletePost} className="hover:text-red-500 transition" title={t.community.delete}>
               <TrashIcon size={16} />
             </button>
           </div>
@@ -141,9 +150,20 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
       </div>
 
       {!editing ? (
-        <p className="text-slate-700 leading-relaxed whitespace-pre-wrap mb-2">
-          {getDisplayContent()}
-        </p>
+        <div className="mb-2">
+          <p className="text-slate-700 leading-relaxed whitespace-pre-wrap">
+            {getDisplayContent()}
+          </p>
+          {hasTranslation && (
+            <button
+              onClick={() => setShowOriginal(!showOriginal)}
+              className="text-xs text-teal-600 hover:underline mt-1 flex items-center gap-1"
+            >
+              <GlobeIcon size={12} />
+              <span>{showOriginal ? t.community.show_translation : t.community.show_original}</span>
+            </button>
+          )}
+        </div>
       ) : (
         <div className="mb-2">
           <textarea
@@ -153,20 +173,14 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
             className="w-full p-2 border rounded-lg resize-none text-sm text-slate-800"
           />
           <div className="flex gap-2 mt-1">
-            <button onClick={handleUpdatePost} className="text-xs bg-teal-600 text-white px-3 py-1 rounded font-bold">حفظ</button>
-            <button onClick={() => { setEditing(false); setEditText(post.content); }} className="text-xs bg-slate-200 px-3 py-1 rounded">إلغاء</button>
+            <button onClick={handleUpdatePost} className="text-xs bg-teal-600 text-white px-3 py-1 rounded font-bold">
+              {t.community.save}
+            </button>
+            <button onClick={() => { setEditing(false); setEditText(post.content); }} className="text-xs bg-slate-200 px-3 py-1 rounded">
+              {t.community.cancel}
+            </button>
           </div>
         </div>
-      )}
-
-      {(hasTranslation || showOriginal) && (
-        <button
-          onClick={() => setShowOriginal(!showOriginal)}
-          className="text-xs text-teal-600 hover:underline mb-2 flex items-center gap-1"
-        >
-          <GlobeIcon size={14} />
-          <span>{showOriginal ? 'عرض الترجمة' : 'عرض النص الأصلي'}</span>
-        </button>
       )}
 
       {post.media_url && (
@@ -201,7 +215,7 @@ export default function PostCard({ post, user, profile, likedPosts, onLike, onDe
           className="flex items-center gap-1 text-sm text-slate-500 hover:text-teal-600 transition"
         >
           <ShareIcon size={18} />
-          <span>{t.community.share || 'مشاركة'}</span>
+          <span>{t.community.share}</span>
         </button>
       </div>
 

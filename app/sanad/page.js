@@ -1,35 +1,22 @@
+// app/sanad/page.js
 'use client';
-import { useState, useEffect } from 'react';
 
-const INITIAL_MESSAGES = {
-  ar: 'السلام عليكم! أنا سند، رفيقك في رحلة العودة. كيف أساعدك اليوم؟',
-  en: 'Peace be upon you! I am Sanad, your companion on the journey back. How can I help you today?',
-  fr: 'Que la paix soit sur vous! Je suis Sanad, votre compagnon sur le chemin du retour. Comment puis-je vous aider?',
-  ur: 'السلام علیکم! میں سند ہوں، واپسی کے سفر میں آپ کا ساتھی۔ آج میں آپ کی کیسے مدد کر سکتا ہوں؟',
-  id: 'Assalamualaikum! Saya Sanad, pendamping Anda dalam perjalanan kembali. Bagaimana saya bisa membantu Anda hari ini?',
-};
+import { useState, useEffect } from 'react';
+import { useLanguage } from '@/app/layout';
 
 export default function SanadPage() {
+  const { lang, setLang, t } = useLanguage();
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [lang, setLang] = useState('ar');
+
+  const isRTL = lang === 'ar' || lang === 'ur';
 
   useEffect(() => {
-    const savedLang = localStorage.getItem('aaed-lang') || 'ar';
-    setLang(savedLang);
     setMessages([
-      { role: 'sanad', text: INITIAL_MESSAGES[savedLang] || INITIAL_MESSAGES.ar }
+      { role: 'sanad', text: t.sanad.initial_message }
     ]);
-  }, []);
-
-  const changeLang = (newLang) => {
-    setLang(newLang);
-    localStorage.setItem('aaed-lang', newLang);
-    setMessages([
-      { role: 'sanad', text: INITIAL_MESSAGES[newLang] || INITIAL_MESSAGES.ar }
-    ]);
-  };
+  }, [lang, t.sanad.initial_message]);
 
   const sendMessage = async () => {
     if (!input.trim() || loading) return;
@@ -44,30 +31,31 @@ export default function SanadPage() {
       const response = await fetch('/api/sanad', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           question: currentInput,
           lang: lang
         })
       });
 
       const data = await response.json();
-      
+
       if (data.error) {
-        setMessages(prev => [...prev, { 
-          role: 'sanad', 
-          text: '⏳ ' + data.error 
+        // عرض خطأ بلغة الواجهة
+        setMessages(prev => [...prev, {
+          role: 'sanad',
+          text: '⏳ ' + (t.sanad.error || data.error)
         }]);
       } else {
-        setMessages(prev => [...prev, { 
-          role: 'sanad', 
+        setMessages(prev => [...prev, {
+          role: 'sanad',
           text: data.answer,
-          source: data.source 
+          sources: data.sources
         }]);
       }
     } catch (error) {
-      setMessages(prev => [...prev, { 
-        role: 'sanad', 
-        text: '⏳ حدث خطأ مؤقت. حاول مرة أخرى.' 
+      setMessages(prev => [...prev, {
+        role: 'sanad',
+        text: '⏳ ' + t.sanad.error
       }]);
     } finally {
       setLoading(false);
@@ -81,24 +69,21 @@ export default function SanadPage() {
     }
   };
 
-  const isRTL = lang === 'ar' || lang === 'ur';
-
   return (
     <main dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex flex-col">
-      
       <header className="bg-teal-900 text-white p-4 flex items-center justify-between shadow-lg">
         <a href="/" className="text-2xl">←</a>
         <div className="text-xl font-bold">
-          سند <span className="text-amber-400">| Sanad</span>
+          {t.sanad.title} <span className="text-amber-400">| Sanad</span>
         </div>
         <div className="flex gap-1">
           {['ar', 'en', 'fr', 'ur', 'id'].map((l) => (
             <button
               key={l}
-              onClick={() => changeLang(l)}
+              onClick={() => setLang(l)}
               className={`px-2 py-1 rounded text-xs font-bold transition ${
-                lang === l 
-                  ? 'bg-amber-400 text-slate-900' 
+                lang === l
+                  ? 'bg-amber-400 text-slate-900'
                   : 'bg-white/10 hover:bg-white/20'
               }`}
             >
@@ -119,9 +104,23 @@ export default function SanadPage() {
             }`}
           >
             <div className="text-sm leading-relaxed whitespace-pre-wrap">{msg.text}</div>
-            {msg.source && (
-              <div className="text-xs text-slate-500 mt-2 pt-2 border-t border-slate-200">
-                📖 {msg.source}
+
+            {msg.sources && msg.sources.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-slate-200">
+                <div className="text-xs font-bold text-slate-500 mb-1">
+                  {t.sanad.source_label}:
+                </div>
+                <ul className="text-xs text-slate-500 space-y-1">
+                  {msg.sources.map((s, i) => (
+                    <li key={i}>
+                      [{i + 1}] {s.source || s.table} {s.url && (
+                        <a href={s.url} target="_blank" rel="noopener noreferrer" className="text-teal-600 hover:underline">
+                          🔗
+                        </a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
           </div>
@@ -129,11 +128,7 @@ export default function SanadPage() {
 
         {loading && (
           <div className="bg-white text-slate-500 p-4 rounded-2xl ml-auto rounded-br-sm max-w-[80%]">
-            {lang === 'ar' ? 'سند يكتب...' : 
-             lang === 'fr' ? 'Sanad écrit...' :
-             lang === 'ur' ? 'سند لکھ رہا ہے...' :
-             lang === 'id' ? 'Sanad sedang menulis...' :
-             'Sanad is typing...'}
+            {t.sanad.loading}
           </div>
         )}
       </div>
@@ -145,13 +140,7 @@ export default function SanadPage() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder={
-              lang === 'ar' ? 'اكتب رسالتك...' :
-              lang === 'fr' ? 'Écrivez votre message...' :
-              lang === 'ur' ? 'اپنا پیغام لکھیں...' :
-              lang === 'id' ? 'Tulis pesan Anda...' :
-              'Type your message...'
-            }
+            placeholder={t.sanad.input_placeholder}
             className="flex-1 p-3 border border-slate-300 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
           />
           <button
@@ -159,15 +148,10 @@ export default function SanadPage() {
             disabled={loading}
             className="bg-teal-600 hover:bg-teal-700 text-white px-6 rounded-xl font-bold disabled:opacity-50"
           >
-            {lang === 'ar' ? 'إرسال' :
-             lang === 'fr' ? 'Envoyer' :
-             lang === 'ur' ? 'بھیجیں' :
-             lang === 'id' ? 'Kirim' :
-             'Send'}
+            {t.sanad.send}
           </button>
         </div>
       </div>
-
     </main>
   );
 }

@@ -34,7 +34,24 @@
     "back_home": "← Kembali ke beranda",
     "signup_success": "Akun berhasil dibuat!",
     "signup_success_msg": "Mengarahkan ke login...",
-    "password_too_short": "Kata sandi minimal 6 karakter"
+    "password_too_short": "Kata sandi minimal 6 karakter",
+    "forgot_password": "Lupa kata sandi?",
+    "forgot_password_title": "Reset Kata Sandi",
+    "forgot_password_subtitle": "Masukkan email Anda dan kami akan mengirim tautan reset",
+    "send_reset_link": "Kirim Tautan Reset",
+    "back_to_login": "← Kembali ke login",
+    "reset_sent_title": "Tautan terkirim!",
+    "reset_sent_desc": "Periksa email Anda — Anda akan menemukan tautan untuk mengatur ulang kata sandi.",
+    "spam_note": "Tidak melihatnya? Periksa folder Spam.",
+    "new_password_title": "Kata Sandi Baru",
+    "new_password_subtitle": "Masukkan kata sandi baru Anda",
+    "new_password_label": "Kata Sandi Baru",
+    "confirm_password_label": "Konfirmasi Kata Sandi",
+    "confirm_password_placeholder": "Ketik ulang",
+    "update_password": "Perbarui Kata Sandi",
+    "password_updated_title": "Kata sandi diperbarui!",
+    "password_updated_desc": "Mengarahkan ke login...",
+    "passwords_not_match": "Kata sandi tidak cocok"
   },
   "guide": {
     "title": "Pembimbing",
@@ -64,7 +81,11 @@
       "confirm": "Konfirmasi Pemesanan"
     },
     "no_results": "Tidak ada pembimbing yang cocok.",
-    "login_required": "Anda harus masuk untuk menghubungi pembimbing"
+    "login_required": "Anda harus masuk untuk menghubungi pembimbing",
+    "welcome_message": "Assalamualaikum! Saya {name}, saya akan membantu Anda dengan {specialty}. Bagaimana saya bisa membantu?",
+    "chat_placeholder": "Tulis pesan Anda...",
+    "send": "Kirim",
+    "loading": "Memuat..."
   },
   "community": {
     "title": "Komunitas",
@@ -86,6 +107,22 @@
     "edit": "Ubah",
     "delete": "Hapus",
     "save": "Simpan",
+    "repost": "Posting Ulang",
+    "show_original": "Lihat Asli",
+    "show_translation": "Lihat Terjemahan",
+    "translate_note": "Postingan Anda akan otomatis diterjemahkan ke semua bahasa",
+    "copy_link": "Salin Tautan",
+    "send_in_message": "Kirim dalam Pesan",
+    "add_note": "Tambahkan catatan (opsional)...",
+    "back": "Kembali",
+    "user_posts": "Postingan pengguna",
+    "profile_not_found": "Pengguna tidak ditemukan",
+    "time_ago": {
+      "now": "baru saja",
+      "min": "m",
+      "hour": "j",
+      "day": "h"
+    },
     "categories": {
       "all": "Semua",
       "general": "Umum",
@@ -163,5 +200,14 @@
     "type_message": "Tulis pesan Anda...",
     "send": "Kirim",
     "loading": "Memuat..."
+  },
+  "sanad": {
+    "title": "Sanad",
+    "initial_message": "Assalamualaikum! Saya Sanad, pendamping Anda dalam perjalanan kembali. Bagaimana saya bisa membantu Anda hari ini?",
+    "input_placeholder": "Tulis pesan Anda...",
+    "send": "Kirim",
+    "loading": "Sanad sedang menulis...",
+    "error": "Terjadi kesalahan saat memproses pertanyaan Anda. Silakan coba lagi.",
+    "source_label": "Sumber"
   }
 }
