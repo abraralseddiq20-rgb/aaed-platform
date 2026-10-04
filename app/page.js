@@ -1,73 +1,114 @@
+// app/page.js
 'use client';
-import { useState, useEffect } from 'react';
-import ar from '@/locales/ar.json';
-import en from '@/locales/en.json';
-import fr from '@/locales/fr.json';
-import ur from '@/locales/ur.json';
-import id from '@/locales/id.json';
 
-const translations = { ar, en, fr, ur, id };
+import { useLanguage } from './layout';
+import { useEffect, useState } from 'react';
+import Link from 'next/link';
+import { supabase } from '@/lib/supabase-client';
 
 export default function Home() {
-  const [lang, setLang] = useState('ar');
-  const [mounted, setMounted] = useState(false);
+  const { lang, setLang, t } = useLanguage();
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
-    setMounted(true);
-    const savedLang = localStorage.getItem('aaed-lang');
-    if (savedLang) setLang(savedLang);
+    // جلب المستخدم الحالي
+    supabase.auth.getUser().then(({ data }) => {
+      setUser(data.user);
+    });
+
+    // الاستماع لتغييرات المصادقة
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => listener.subscription.unsubscribe();
   }, []);
 
-  const changeLang = (newLang) => {
-    setLang(newLang);
-    localStorage.setItem('aaed-lang', newLang);
-  };
-
-  const t = translations[lang].home;
   const isRTL = lang === 'ar' || lang === 'ur';
 
-  if (!mounted) return null;
-
   return (
-    <main 
+    <main
       dir={isRTL ? 'rtl' : 'ltr'}
       className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center p-6"
     >
       <div className="text-center text-white max-w-3xl w-full">
         
-        <div className="flex justify-center gap-2 mb-8">
-          {['ar', 'en', 'fr', 'ur', 'id'].map((l) => (
-            <button
-              key={l}
-              onClick={() => changeLang(l)}
-              className={`px-3 py-1 rounded-full text-xs font-bold transition ${
-                lang === l 
-                  ? 'bg-amber-400 text-slate-900' 
-                  : 'bg-white/10 hover:bg-white/20'
-              }`}
-            >
-              {l.toUpperCase()}
-            </button>
-          ))}
+        {/* الشريط العلوي: اللغات + Auth */}
+        <div className="flex justify-between items-center mb-8 flex-wrap gap-3">
+          <div className="flex gap-2">
+            {['ar', 'en', 'fr', 'ur', 'id'].map((l) => (
+              <button
+                key={l}
+                onClick={() => setLang(l)}
+                className={`px-3 py-1 rounded-full text-xs font-bold transition ${
+                  lang === l
+                    ? 'bg-amber-400 text-slate-900'
+                    : 'bg-white/10 hover:bg-white/20'
+                }`}
+              >
+                {l.toUpperCase()}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            {user ? (
+              <>
+                <Link
+                  href="/profile"
+                  className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-sm font-bold transition"
+                >
+                  {t.home.profile}
+                </Link>
+                <button
+                  onClick={async () => {
+                    await supabase.auth.signOut();
+                    window.location.reload();
+                  }}
+                  className="bg-red-500/80 hover:bg-red-500 px-4 py-2 rounded-full text-sm font-bold transition"
+                >
+                  {t.home.logout}
+                </button>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="bg-white/10 hover:bg-white/20 px-4 py-2 rounded-full text-sm font-bold transition"
+                >
+                  {t.home.login}
+                </Link>
+                <Link
+                  href="/signup"
+                  className="bg-amber-400 hover:bg-amber-500 text-slate-900 px-4 py-2 rounded-full text-sm font-bold transition"
+                >
+                  {t.home.signup}
+                </Link>
+              </>
+            )}
+          </div>
         </div>
 
+        {/* العنوان الرئيسي */}
         <h1 className="text-5xl md:text-6xl font-bold mb-4">
-          {t.title} <span className="text-amber-400">|</span> <span className="text-amber-400">Aaed</span>
+          {t.home.title} <span className="text-amber-400">|</span>{' '}
+          <span className="text-amber-400">Aaed</span>
         </h1>
 
         <p className="text-2xl md:text-3xl opacity-95 tracking-wide mb-8">
-          {t.slogan}
+          {t.home.slogan}
         </p>
 
         <p className="text-base md:text-lg mb-10 opacity-80 max-w-xl mx-auto">
-          {t.description}
+          {t.home.description}
         </p>
 
+        {/* البوابات الأربع */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
           
-          <a 
-            href="/sanad" 
-            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center cursor-pointer"
+          <Link
+            href="/sanad"
+            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center"
           >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -77,12 +118,12 @@ export default function Home() {
                 <circle cx="15" cy="14" r="1" fill="white"/>
               </svg>
             </div>
-            <div className="font-bold text-sm">{t.sanad}</div>
-          </a>
+            <div className="font-bold text-sm">{t.home.sanad}</div>
+          </Link>
 
-          <a 
+          <Link
             href="/guide"
-            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center cursor-pointer"
+            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center"
           >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -90,12 +131,12 @@ export default function Home() {
                 <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
               </svg>
             </div>
-            <div className="font-bold text-sm">{t.guide}</div>
-          </a>
+            <div className="font-bold text-sm">{t.home.guide}</div>
+          </Link>
 
-          <div 
-            className="bg-white/10 backdrop-blur p-4 rounded-xl opacity-60 cursor-not-allowed text-center"
-            title="قريباً"
+          <Link
+            href="/community"
+            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center"
           >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -105,12 +146,12 @@ export default function Home() {
                 <path d="M15 20c0-2 1.5-3.5 4-3.5"/>
               </svg>
             </div>
-            <div className="font-bold text-sm">{t.community}</div>
-          </div>
+            <div className="font-bold text-sm">{t.home.community}</div>
+          </Link>
 
-          <div 
-            className="bg-white/10 backdrop-blur p-4 rounded-xl opacity-60 cursor-not-allowed text-center"
-            title="قريباً"
+          <Link
+            href="/library"
+            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center"
           >
             <div className="flex justify-center mb-3">
               <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
@@ -121,8 +162,8 @@ export default function Home() {
                 <path d="M8 16h5"/>
               </svg>
             </div>
-            <div className="font-bold text-sm">{t.library}</div>
-          </div>
+            <div className="font-bold text-sm">{t.home.library}</div>
+          </Link>
 
         </div>
 
