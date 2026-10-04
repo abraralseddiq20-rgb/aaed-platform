@@ -1,57 +1,96 @@
-// app/profile/[id]/page.js
+// app/profile/page.js
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/app/layout';
-import { supabase } from '@/lib/supabase-client';
-import PostCard from '@/app/community/PostCard';
+import { supabase, getProfile, updateProfile } from '@/lib/supabase-client';
 
-export default function PublicProfilePage() {
-  const params = useParams();
+export default function ProfilePage() {
   const router = useRouter();
   const { lang, setLang, t } = useLanguage();
-  const [currentUser, setCurrentUser] = useState(null);
-  const [profile, setProfile] = useState(null);
-  const [posts, setPosts] = useState([]);
-  const [likedPosts, setLikedPosts] = useState(new Set());
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ name: '', country: '', bio: '' });
 
   const isRTL = lang === 'ar' || lang === 'ur';
-  const profileId = params?.id;
 
   useEffect(() => {
-    async function loadData() {
+    let cancelled = false;
+
+    // Timeout 8 ثواني
+    const timeout = setTimeout(() => {
+      if (!cancelled && loading) {
+        console.warn('[profile] timeout — redirecting to login');
+        router.push('/login');
+      }
+    }, 8000);
+
+    async function load() {
       try {
-        const { data: { user } } = await supabase.auth.getUser();
-        setCurrentUser(user);
+        const { data: { user: u } } = await supabase.auth.getUser();
+        if (!u) {
+          if (!cancelled) router.push('/login');
+          return;
+        }
+        if (cancelled) return;
+        setUser(u);
 
-        const { data: prof } = await supabase
-          .from('profiles').select('*').eq('id', profileId).single();
-        setProfile(prof);
-
-        const { data: userPosts } = await supabase
-          .from('posts')
-          .select(`*, author:profiles!posts_author_id_fkey(id, name, avatar_initial, country)`)
-          .eq('author_id', profileId)
-          .eq('is_hidden', false)
-          .order('created_at', { ascending: false });
-        setPosts(userPosts || []);
-
-        if (user) {
-          const { data: likes } = await supabase
-            .from('likes').select('post_id').eq('user_id', user.id);
-          if (likes) setLikedPosts(new Set(likes.map((l) => l.post_id)));
+        const prof = await getProfile(u.id);
+        if (cancelled) return;
+        if (prof) {
+          setProfile(prof);
+          setForm({
+            name: prof.name || '',
+            country: prof.country || '',
+            bio: prof.bio || '',
+          });
         }
       } catch (err) {
-        console.error(err);
+        console.error('[profile] error:', err);
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+          clearTimeout(timeout);
+        }
       }
     }
-    if (profileId) loadData();
-  }, [profileId]);
+    load();
+
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  const handleSave = async () => {
+    if (!user) return;
+    setSaving(true);
+    try {
+      const updated = await updateProfile(user.id, {
+        name: form.name,
+        country: form.country,
+        bio: form.bio,
+        avatar_initial: form.name?.[0] || 'U',
+      });
+      setProfile(updated);
+      setEditing(false);
+    } catch (err) {
+      console.error(err);
+      alert('فشل الحفظ');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    router.push('/login');
+  };
 
   if (loading) {
     return (
@@ -61,30 +100,15 @@ export default function PublicProfilePage() {
     );
   }
 
-  if (!profile) {
-    return (
-      <main dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center p-6">
-        <div className="bg-white rounded-2xl p-8 text-center max-w-md">
-          <div className="text-5xl mb-4">👤</div>
-          <h1 className="text-xl font-bold text-slate-800 mb-4">{t.community.profile_not_found}</h1>
-          <button
-            onClick={() => router.back()}
-            className="text-teal-600 hover:underline"
-          >
-            ← {t.community.back}
-          </button>
-        </div>
-      </main>
-    );
-  }
-
-  const isOwner = currentUser?.id === profileId;
+  if (!user) return null;
 
   return (
     <main dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex flex-col">
       <header className="bg-teal-900 text-white p-4 flex items-center justify-between shadow-lg">
-        <button onClick={() => router.back()} className="text-2xl">→</button>
-        <div className="text-xl font-bold">{t.profile.title}</div>
+        <Link href="/" className="text-2xl">→</Link>
+        <div className="text-xl font-bold">
+          {t.profile.title} <span className="text-amber-400">| Profile</span>
+        </div>
         <div className="flex gap-1">
           {['ar', 'en', 'fr', 'ur', 'id'].map((l) => (
             <button
@@ -102,61 +126,95 @@ export default function PublicProfilePage() {
 
       <div className="flex-1 overflow-y-auto p-4">
         <div className="max-w-2xl mx-auto space-y-4">
-
           <div className="bg-white rounded-2xl p-6 shadow-lg">
-            <div className="flex items-start gap-4 mb-4">
+            <div className="flex items-start gap-4 mb-6">
               <div className="w-20 h-20 rounded-full bg-teal-600 text-white flex items-center justify-center text-3xl font-bold flex-shrink-0">
-                {profile.avatar_initial || profile.name?.[0] || 'U'}
+                {profile?.avatar_initial || profile?.name?.[0] || 'U'}
               </div>
               <div className="flex-1">
-                <h2 className="font-bold text-2xl text-slate-800">{profile.name}</h2>
-                {profile.country && (
-                  <p className="text-sm text-slate-500">📍 {profile.country}</p>
+                {!editing ? (
+                  <>
+                    <h2 className="font-bold text-2xl text-slate-800">{profile?.name || 'User'}</h2>
+                    <p className="text-sm text-slate-500">{user?.email}</p>
+                    <span className="inline-block mt-2 bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-medium">
+                      {t.profile.roles[profile?.role] || t.profile.roles.user}
+                    </span>
+                  </>
+                ) : (
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-1">{t.profile.name}</label>
+                      <input
+                        type="text"
+                        value={form.name}
+                        onChange={(e) => setForm({ ...form, name: e.target.value })}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-1">{t.profile.country}</label>
+                      <input
+                        type="text"
+                        value={form.country}
+                        onChange={(e) => setForm({ ...form, country: e.target.value })}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-teal-500"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-slate-500 mb-1">{t.profile.bio}</label>
+                      <textarea
+                        value={form.bio}
+                        onChange={(e) => setForm({ ...form, bio: e.target.value })}
+                        rows={3}
+                        className="w-full p-2 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:border-teal-500"
+                      />
+                    </div>
+                  </div>
                 )}
-                <span className="inline-block mt-2 bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-medium">
-                  {t.profile.roles[profile.role] || t.profile.roles.user}
-                </span>
               </div>
-              {isOwner && (
-                <Link
-                  href="/profile"
-                  className="bg-teal-600 text-white px-4 py-2 rounded-lg text-sm font-bold"
-                >
-                  {t.profile.edit}
-                </Link>
-              )}
             </div>
-            {profile.bio && (
+
+            {!editing && profile?.bio && (
               <div className="pt-3 border-t border-slate-200">
                 <div className="text-sm text-slate-700 leading-relaxed">{profile.bio}</div>
               </div>
             )}
-          </div>
 
-          <div className="text-white text-center text-sm">
-            {posts.length} {t.community.user_posts}
-          </div>
-
-          {posts.length === 0 ? (
-            <div className="bg-white rounded-2xl p-8 text-center text-slate-500">
-              {t.community.no_posts}
+            <div className="flex gap-3 mt-6">
+              {!editing ? (
+                <>
+                  <button
+                    onClick={() => setEditing(true)}
+                    className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-bold transition"
+                  >
+                    {t.profile.edit}
+                  </button>
+                  <button
+                    onClick={handleLogout}
+                    className="flex-1 bg-red-500 hover:bg-red-600 text-white py-3 rounded-xl font-bold transition"
+                  >
+                    {t.profile.logout}
+                  </button>
+                </>
+              ) : (
+                <>
+                  <button
+                    onClick={() => setEditing(false)}
+                    className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-3 rounded-xl font-bold transition"
+                  >
+                    {t.profile.cancel}
+                  </button>
+                  <button
+                    onClick={handleSave}
+                    disabled={saving}
+                    className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-bold transition disabled:opacity-50"
+                  >
+                    {saving ? '...' : t.profile.save}
+                  </button>
+                </>
+              )}
             </div>
-          ) : (
-            posts.map((post) => (
-              <PostCard
-                key={post.id}
-                post={post}
-                user={currentUser}
-                profile={profile}
-                likedPosts={likedPosts}
-                onLike={() => {}}
-                onDelete={() => {}}
-                onUpdate={() => {}}
-                onRepost={() => {}}
-              />
-            ))
-          )}
-
+          </div>
         </div>
       </div>
     </main>
