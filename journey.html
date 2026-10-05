@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>رحلة عائد | Aaed</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--td:#0f766e;--tl:#14b8a6;--am:#f59e0b;--bg:#0f172a;--bs:#1e293b;--tx:#f1f5f9;--tm:#94a3b8;--bd:rgba(20,184,166,.2);--ok:#10b981}
+body{font-family:'Tajawal',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh;line-height:1.7;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at bottom right,rgba(245,158,11,.15),rgba(15,118,110,.08) 30%,transparent 70%);pointer-events:none;z-index:0}
+.c{max-width:1200px;margin:0 auto;padding:40px 20px 80px;position:relative;z-index:1}
+header{text-align:center;margin-bottom:60px;padding-bottom:40px;border-bottom:1px solid var(--bd)}
+.logo{display:inline-flex;align-items:center;gap:12px;margin-bottom:20px}
+.li{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--td),var(--tl));display:flex;align-items:center;justify-content:center;box-shadow:0 8px 32px rgba(15,118,110,.4)}
+.li svg{width:32px;height:32px;stroke:#fff;fill:none;stroke-width:1.5}
+.lt{font-size:32px;font-weight:800;background:linear-gradient(135deg,var(--tl),var(--am));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+header h1{font-size:42px;font-weight:800;margin-bottom:12px}
+header p{font-size:18px;color:var(--tm);max-width:700px;margin:0 auto 24px}
+.meta{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:24px;font-size:14px;color:var(--tm)}
+.meta span{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;background:var(--bs);border-radius:100px;border:1px solid var(--bd)}
+.meta svg{width:16px;height:16px;stroke:var(--tl);fill:none;stroke-width:1.5}
+.ql{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:24px}
+.ql a{display:inline-flex;align-items:center;gap:8px;padding:10px 20px;border-radius:100px;text-decoration:none;font-weight:500;font-size:15px;transition:.2s;border:1px solid var(--bd)}
+.ql a.p{background:linear-gradient(135deg,var(--td),var(--tl));color:#fff;box-shadow:0 8px 24px rgba(15,118,110,.3)}
+.ql a.a{background:linear-gradient(135deg,var(--am),#d97706);color:#fff;box-shadow:0 8px 24px rgba(245,158,11,.3)}
+.ql a:hover{transform:translateY(-2px)}
+.ql svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.5}
+.tl{position:relative;padding-right:50px}
+.tl::before{content:'';position:absolute;right:18px;top:20px;bottom:20px;width:2px;background:linear-gradient(180deg,var(--td),var(--am));opacity:.4}
+.st{position:relative;margin-bottom:48px}
+.sd{position:absolute;right:-50px;top:20px;width:36px;height:36px;border-radius:50%;background:var(--bg);border:3px solid var(--tl);display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 6px rgba(15,118,110,.15);z-index:2}
+.sd svg{width:18px;height:18px;stroke:var(--tl);fill:none;stroke-width:2}
+.st.cur .sd{border-color:var(--am);box-shadow:0 0 0 6px rgba(245,158,11,.2);animation:p 2s infinite}
+.st.cur .sd svg{stroke:var(--am)}
+@keyframes p{0%,100%{box-shadow:0 0 0 6px rgba(245,158,11,.2)}50%{box-shadow:0 0 0 12px rgba(245,158,11,.05)}}
+.sc{background:var(--bs);border:1px solid var(--bd);border-radius:20px;padding:28px 32px}
+.st.cur .sc{border-color:rgba(245,158,11,.4);box-shadow:0 8px 32px rgba(245,158,11,.1)}
+.sh{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:12px;margin-bottom:20px;padding-bottom:16px;border-bottom:1px solid var(--bd)}
+.sn{font-size:24px;font-weight:700;margin-bottom:4px}
+.st.cur .sn{color:var(--am)}
+.sb{font-size:14px;color:var(--tm);font-weight:500}
+.bdg{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:100px;font-size:13px;font-weight:500;background:rgba(16,185,129,.1);color:var(--ok);border:1px solid rgba(16,185,129,.2);white-space:nowrap}
+.st.cur .bdg{background:rgba(245,158,11,.1);color:var(--am);border-color:rgba(245,158,11,.3)}
+.bdg svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:2}
+.stt{display:flex;align-items:center;gap:8px;margin:20px 0 12px;padding-bottom:8px;border-bottom:1px dashed rgba(20,184,166,.2);color:var(--tl);font-size:15px;font-weight:700}
+.stt svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8}
+.ev{list-style:none;display:flex;flex-direction:column;gap:12px}
+.e{display:flex;align-items:flex-start;gap:12px;font-size:16px;line-height:1.6}
+.e.d{color:var(--tm)}
+.e.d .et{text-decoration:line-through;text-decoration-color:rgba(148,163,184,.4)}
+.ec{flex-shrink:0;width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;margin-top:3px}
+.e.d .ec{background:rgba(16,185,129,.15)}
+.e.d .ec svg{stroke:var(--ok)}
+.e:not(.d) .ec{background:rgba(148,163,184,.15)}
+.e:not(.d) .ec svg{stroke:var(--tm)}
+.ec svg{width:14px;height:14px;fill:none;stroke-width:2.5}
+.et{flex:1}
+.ed{display:inline-block;font-size:12px;color:var(--tl);font-weight:500;margin-right:8px;padding:2px 8px;background:rgba(20,184,166,.1);border-radius:6px;vertical-align:middle}
+.nt{margin-top:16px;padding:14px 18px;background:rgba(245,158,11,.08);border:1px solid rgba(245,158,11,.25);border-radius:12px;font-size:14px;line-height:1.6}
+.nt strong{color:var(--am)}
+footer{margin-top:60px;padding-top:40px;border-top:1px solid var(--bd);text-align:center;color:var(--tm);font-size:14px}
+@media(max-width:640px){.c{padding:24px 16px 60px}header h1{font-size:28px}.lt{font-size:24px}.li{width:44px;height:44px}.sc{padding:20px}.sn{font-size:20px}.tl{padding-right:36px}.sd{right:-36px;width:28px;height:28px}.tl::before{right:13px}}
+</style>
+</head>
+<body>
+<div class="c">
+<header>
+<div class="logo">
+<div class="li"><svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg></div>
+<span class="lt">عائد | Aaed</span>
+</div>
+<h1>رحلة المشروع</h1>
+<p>من التسجيل إلى التسليم — رحلة تطوير منصة إسلامية آمنة متعددة اللغات</p>
+<div class="meta">
+<span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>فريق #955</span>
+<span><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>تحدي المحتوى الإسلامي</span>
+<span id="lu"><svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>—</span>
+</div>
+<div class="ql">
+<a href="https://aaed-platform.vercel.app/login" target="_blank" class="p"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>تجربة الموقع</a>
+<a href="https://aaed.vercel.app/" target="_blank" class="a"><svg viewBox="0 0 24 24" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>صفحة الحجز</a>
+<a href="https://github.com/abraralseddiq20-rgb/aaed-platform" target="_blank"><svg viewBox="0 0 24 24" stroke-linecap="round"><path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/></svg>GitHub</a>
+</div>
+</header>
+<div class="tl" id="timeline"></div>
+<footer><p>© 2026 عائد | Aaed — رفيقك في رحلة العودة</p></footer>
+</div>
+
+<!-- ✅ الخطوة 2: البيانات -->
+<!-- ✅ الخطوة 3: JavaScript -->
+</body>
+</html>
+<script>
+const JOURNEY_DATA = {
+  lastUpdate: "6 أكتوبر 2026 — 12:30 ص",
+
+  beforeJudging: {
+    title: "قبل التحكيم",
+    subtitle: "من التسجيل إلى 3 أكتوبر 2026",
+    status: "مكتملة",
+    current: false,
+    sections: [
+      {
+        title: "1. التسجيل والتحضير",
+        icon: "flag",
+        events: [
+          { text: "التسجيل في التحدي", date: "قبل 2 أكتوبر", done: true },
+          { text: "تجهيز فكرة المشروع: عائد | Aaed", date: "قبل 2 أكتوبر", done: true },
+          { text: "المسار: المفتوح (حلول مبتكرة في التعريف بالإسلام)", done: true },
+          { text: "تحديد الجمهور: المسلمون الجدد + العائدون + الباحثون", done: true }
+        ]
+      },
+      {
+        title: "2. الإنجازات التقنية",
+        icon: "cpu",
+        events: [
+          { text: "5 لغات كاملة (AR, EN, FR, UR, ID)", done: true },
+          { text: "صفحة سند — تعمل مع Gemini API", done: true },
+          { text: "صفحة المرشد + نظام حجز", done: true },
+          { text: "صفحة محادثة المرشد", done: true },
+          { text: "Safety Layer (4 مستويات)", done: true },
+          { text: "قاعدة بيانات RAG (8 جداول في Supabase)", done: true },
+          { text: "صفحة هبوط (Landing Page) + نظام تذاكر", done: true }
+        ]
+      },
+      {
+        title: "3. ورش اليوم الأول",
+        icon: "book",
+        events: [
+          { text: "ورشة ابتكار نماذج الأعمال — أ. فتون الشهري", date: "2 أكتوبر", done: true },
+          { text: "ورشة LLM + RAG — م. ناهض الحربي", date: "2 أكتوبر", done: true },
+          { text: "المشاركة في الشات وطرح الأسئلة", date: "2 أكتوبر", done: true }
+        ]
+      },
+      {
+        title: "4. ورش اليوم الثاني",
+        icon: "book",
+        events: [
+          { text: "حضور ورش اليوم الثاني", date: "3 أكتوبر", done: true },
+          { text: "تسجيل الحضور الرسمي", date: "3 أكتوبر", done: true },
+          { text: "استلام شهادات ورش اليوم الثاني", date: "3 أكتوبر", done: true }
+        ]
+      }
+    ],
+    note: "<strong>ملاحظة إدارية:</strong> تم حضور ورشتي اليوم الأول (2 أكتوبر) بالكامل، مع المشاركة في الشات وطرح الأسئلة، لكن لم يتم التسجيل اليدوي في رابط الحضور خلالهما. تم التواصل مع الجهة المنظمة لإصدار الشهادتين."
+  },
+
+  day1: {
+    title: "اليوم الأول من التحكيم",
+    subtitle: "4 أكتوبر 2026",
+    status: "مكتملة",
+    current: false,
+    sections: [
+      {
+        title: "البنية الأساسية",
+        icon: "settings",
+        events: [
+          { text: "نظام مصادقة كامل (تسجيل، دخول، استعادة كلمة المرور)", done: true },
+          { text: "حماية الصفحات", done: true },
+          { text: "قاعدة بيانات: 16 جدول + Storage bucket", done: true },
+          { text: "دعم 5 لغات كاملة (AR, EN, FR, UR, ID)", done: true }
+        ]
+      },
+      {
+        title: "سند — المساعد الذكي (RAG)",
+        icon: "cpu",
+        events: [
+          { text: "صفحة سند تعمل مع Gemini API", done: true },
+          { text: "500 حديث من الصحيحين بمتجهات على Supabase", done: true },
+          { text: "1460 آية قرآنية بمتجهات (768-dim)", done: true },
+          { text: "بحث دلالي في القرآن والحديث", done: true }
+        ]
+      },
+      {
+        title: "المرشد البشري + المجتمع",
+        icon: "users",
+        events: [
+          { text: "صفحة المرشد + نظام حجز", done: true },
+          { text: "قائمة مرشدين + شات حي", done: true },
+          { text: "المجتمع: نشر (نص/صورة/فيديو) + ترجمة تلقائية", done: true },
+          { text: "فلترة + تفاعل كامل", done: true }
+        ]
+      },
+      {
+        title: "المكتبة الإسلامية",
+        icon: "library",
+        events: [
+          { text: "بناء صفحة المكتبة بالكامل", done: true },
+          { text: "4 مستويات + 4 أنواع + 8 تصنيفات", done: true },
+          { text: "42 عنصر metadata في Supabase", done: true }
+        ]
+      },
+      {
+        title: "النشر",
+        icon: "shield",
+        events: [
+          { text: "Safety Layer (4 مستويات) — إحالة بشرية", done: true },
+          { text: "النشر الحي على Vercel", done: true }
+        ]
+      }
+    ]
+  },
+
+  day2: {
+    title: "اليوم الثاني من التحكيم",
+    subtitle: "5 أكتوبر 2026",
+    status: "قيد العمل",
+    current: true,
+    sections: [
+      {
+        title: "قاعدة الراق (RAG) — الإنجاز الأبرز",
+        icon: "database",
+        events: [
+          { text: "القرآن الكريم كامل: 6236 آية بمتجهات", done: true },
+          { text: "الحديث: 500 حديث بمتجهات", done: true },
+          { text: "المصطلحات: 10 مصطلحات بمتجهات", done: true },
+          { text: "search_knowledge على 7 جداول", done: true },
+          { text: "الراق (سند) يعمل 100%", done: true },
+          { text: "الترجمة الفورية: 5 لغات", done: true }
+        ]
+      },
+      {
+        title: "المكتبة الإسلامية",
+        icon: "library",
+        events: [
+          { text: "42 عنصر metadata مسجّل", done: true },
+          { text: "البناء جاهز بالكامل", done: true },
+          { text: "رفع المواد العلمية الفعلية", done: false }
+        ]
+      },
+      {
+        title: "قيد التطوير",
+        icon: "clock",
+        events: [
+          { text: "aqeeda: السكربت جاهز (100 مسألة)", done: false },
+          { text: "feqhi + seerah + dawah: السكربتات قيد الكتابة", done: false },
+          { text: "Ollama: الترجمة المحلية (قيد التثبيت)", done: false },
+          { text: "Gemini API: 503 (ضغط عالمي)", done: false }
+        ]
+      }
+    ]
+  },
+
+  next: {
+    title: "التسليم النهائي",
+    subtitle: "6 أكتوبر 2026",
+    status: "قيد العمل",
+    current: false,
+    sections: [
+      {
+        title: "المهام الحرجة",
+        icon: "alert",
+        events: [
+          { text: "رفع محتوى المكتبة (دروس + كتب)", done: false },
+          { text: "إكمال الجداول الأربعة", done: false },
+          { text: "تفعيل Ollama", done: false },
+          { text: "النشر النهائي + اختبار شامل", done: false }
+        ]
+      },
+      {
+        title: "الفيديو والملف الختامي",
+        icon: "video",
+        events: [
+          { text: "اختبار الراق على 12 سؤال", done: false },
+          { text: "Pitch Deck", done: false },
+          { text: "سكريبت الفيديو", done: false },
+          { text: "الفيديو الختامي + الملف الختامي", done: false }
+        ]
+      }
+    ]
+  }
+};
+</script>
+<script>
+const ICONS = {
+  check: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+  circle: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/></svg>',
+  spinner: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-6.22-8.56"/></svg>',
+  flag: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>',
+  book: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>',
+  settings: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>',
+  cpu: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><path d="M9 1v3M15 1v3M9 20v3M15 20v3M20 9h3M20 14h3M1 9h3M1 14h3"/></svg>',
+  user: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+  users: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>',
+  library: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>',
+  'user-circle': '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="10" r="3"/><path d="M7 20.66a8 8 0 0 1 10 0"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>',
+  database: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>',
+  clock: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>',
+  alert: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+  video: '<svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>'
+};
+
+function renderSection(section) {
+  const eventsHtml = section.events.map(function(ev) {
+    const iconClass = ev.done ? 'done' : '';
+    const icon = ev.done ? ICONS.check : ICONS.circle;
+    const dateHtml = ev.date ? '<span class="ed">' + ev.date + '</span>' : '';
+    return '<li class="e ' + iconClass + '"><span class="ec">' + icon + '</span><span class="et">' + ev.text + dateHtml + '</span></li>';
+  }).join('');
+  const sectionIcon = ICONS[section.icon] || ICONS.book;
+  return '<div class="stt">' + sectionIcon + section.title + '</div><ul class="ev">' + eventsHtml + '</ul>';
+}
+
+function renderStage(stage) {
+  let allEvents = [];
+  if (stage.sections) {
+    stage.sections.forEach(function(s) { allEvents = allEvents.concat(s.events); });
+  }
+  const doneCount = allEvents.filter(function(e) { return e.done; }).length;
+  const totalCount = allEvents.length;
+  const isComplete = doneCount === totalCount && totalCount > 0;
+  let contentHtml = '';
+  if (stage.sections) {
+    contentHtml = stage.sections.map(renderSection).join('');
+  }
+  const noteHtml = stage.note ? '<div class="nt">' + stage.note + '</div>' : '';
+  const stageClass = stage.current ? 'cur' : '';
+  const badgeIcon = isComplete ? ICONS.check : ICONS.spinner;
+  const badgeText = isComplete ? 'مكتملة ' + doneCount + '/' + totalCount : 'قيد العمل ' + doneCount + '/' + totalCount;
+  return '<div class="st ' + stageClass + '"><div class="sd">' + (stage.current ? ICONS.flag : ICONS.check) + '</div><div class="sc"><div class="sh"><div><div class="sn">' + stage.title + '</div><div class="sb">' + stage.subtitle + '</div></div><div class="bdg">' + badgeIcon + ' ' + badgeText + '</div></div>' + contentHtml + noteHtml + '</div></div>';
+}
+
+function render() {
+  const timeline = document.getElementById('timeline');
+  const stages = [
+    JOURNEY_DATA.beforeJudging,
+    JOURNEY_DATA.day1,
+    JOURNEY_DATA.day2,
+    JOURNEY_DATA.next
+  ];
+  timeline.innerHTML = stages.map(renderStage).join('');
+  document.getElementById('lu').innerHTML = '<svg viewBox="0 0 24 24" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> ' + JOURNEY_DATA.lastUpdate;
+}
+
+render();
+</script>
