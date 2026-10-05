@@ -95,27 +95,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* بطاقة المرشد — تظهر للمرشدين فقط */}
-        {isGuide && (
-          <Link
-            href="/guide/dashboard"
-            className="block bg-amber-400 hover:bg-amber-500 text-slate-900 rounded-2xl p-5 mb-8 transition shadow-lg"
-          >
-            <div className="flex items-center gap-4 justify-center">
-              <div className="text-3xl">👨‍🏫</div>
-              <div className="text-right">
-                <div className="font-bold text-lg">
-                  {t.guide_dashboard.title}
-                </div>
-                <div className="text-xs opacity-80">
-                  {t.guide_dashboard.pending_requests} · {t.guide_dashboard.active_sessions}
-                </div>
-              </div>
-              <div className="text-2xl">→</div>
-            </div>
-          </Link>
-        )}
-
         {/* العنوان */}
         <h1 className="text-5xl md:text-6xl font-bold mb-4">
           {t.home.title} <span className="text-amber-400">|</span>{' '}
@@ -148,17 +127,38 @@ export default function Home() {
             <div className="font-bold text-sm">{t.home.sanad}</div>
           </Link>
 
+          {/* بوابة المرشد — تتحول للوحة المرشد إذا المستخدم مرشد */}
           <Link
-            href="/guide"
-            className="bg-white/10 backdrop-blur p-4 rounded-xl hover:bg-white/20 transition block text-center"
+            href={isGuide ? '/guide/dashboard' : '/guide'}
+            className={`backdrop-blur p-4 rounded-xl transition block text-center ${
+              isGuide
+                ? 'bg-amber-400/20 hover:bg-amber-400/30 border border-amber-400/40'
+                : 'bg-white/10 hover:bg-white/20'
+            }`}
           >
             <div className="flex justify-center mb-3">
-              <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
-                <circle cx="12" cy="8" r="4"/>
-                <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
-              </svg>
+              {isGuide ? (
+                // أيقونة Dashboard (خطية)
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <rect x="3" y="3" width="7" height="7" rx="1"/>
+                  <rect x="14" y="3" width="7" height="7" rx="1"/>
+                  <rect x="3" y="14" width="7" height="7" rx="1"/>
+                  <rect x="14" y="14" width="7" height="7" rx="1"/>
+                </svg>
+              ) : (
+                // أيقونة المرشد (شخص)
+                <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="white" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+                  <circle cx="12" cy="8" r="4"/>
+                  <path d="M4 21c0-4 4-6 8-6s8 2 8 6"/>
+                </svg>
+              )}
             </div>
-            <div className="font-bold text-sm">{t.home.guide}</div>
+            <div className="font-bold text-sm">
+              {isGuide
+                ? (t.guide_dashboard?.title || 'لوحة المرشد')
+                : t.home.guide
+              }
+            </div>
           </Link>
 
           <Link

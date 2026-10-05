@@ -22,18 +22,6 @@ const AUTO_REPLY_MESSAGES = {
   id: 'Terima kasih atas pesan Anda. Saya akan membalas secepatnya.',
 };
 
-// يبني الرسائل المعروضة — بدون الرد التلقائي (يُضاف فقط عند الإرسال)
-function buildDisplayMessages(msgs, guideId, lang) {
-  const now = new Date().toISOString();
-  const welcome = {
-    id: 'welcome',
-    content: WELCOME_MESSAGES[lang] || WELCOME_MESSAGES.ar,
-    sender_id: guideId,
-    created_at: msgs[0]?.created_at || now,
-  };
-  return [welcome, ...msgs];
-}
-
 export default function GuideChatPage() {
   const params = useParams();
   const router = useRouter();
@@ -46,12 +34,20 @@ export default function GuideChatPage() {
   const [loading, setLoading] = useState(true);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
-  const [autoReplySent, setAutoReplySent] = useState(false);
 
   const isRTL = lang === 'ar' || lang === 'ur';
   const guideId = params?.id;
 
+  // ⚠️ إذا الرابط "dashboard" → redirect
   useEffect(() => {
+    if (guideId === 'dashboard') {
+      router.replace('/guide/dashboard');
+    }
+  }, [guideId, router]);
+
+  useEffect(() => {
+    if (guideId === 'dashboard') return; // تجنب التحميل
+
     let cancelled = false;
 
     async function load() {
@@ -104,20 +100,24 @@ export default function GuideChatPage() {
         if (cancelled) return;
         if (session) setSessionId(session.id);
 
+        const welcomeMsg = {
+          id: 'welcome',
+          content: WELCOME_MESSAGES[lang] || WELCOME_MESSAGES.ar,
+          sender_id: guideId,
+          created_at: new Date().toISOString(),
+        };
+
         if (session) {
           try {
             const msgs = await getMessages(session.id);
             if (!cancelled) {
-              setMessages(buildDisplayMessages(msgs || [], guideId, lang));
-              // إذا كان فيه رسالة من المستخدم → نعتبر الرد التلقائي أُرسل
-              const hasUserMsg = (msgs || []).some((m) => m.sender_id === currentUser.id);
-              setAutoReplySent(hasUserMsg);
+              setMessages(msgs.length > 0 ? msgs : [welcomeMsg]);
             }
           } catch (msgErr) {
-            if (!cancelled) setMessages(buildDisplayMessages([], guideId, lang));
+            if (!cancelled) setMessages([welcomeMsg]);
           }
         } else {
-          if (!cancelled) setMessages(buildDisplayMessages([], guideId, lang));
+          if (!cancelled) setMessages([welcomeMsg]);
         }
       } catch (err) {
         if (!cancelled) setError('Failed to load');
@@ -138,6 +138,7 @@ export default function GuideChatPage() {
     setSending(true);
 
     const text = input.trim();
+    const isFirstMessage = !messages.some((m) => m.sender_id === user.id);
 
     const userMsg = {
       id: Date.now(),
@@ -146,20 +147,18 @@ export default function GuideChatPage() {
       created_at: new Date().toISOString(),
     };
 
-    // إضافة رسالة المستخدم
+    const autoReply = {
+      id: `auto-${Date.now() + 1}`,
+      content: AUTO_REPLY_MESSAGES[lang] || AUTO_REPLY_MESSAGES.ar,
+      sender_id: guideId,
+      created_at: new Date(Date.now() + 1500).toISOString(),
+      is_auto: true,
+    };
+
     setMessages((prev) => [...prev, userMsg]);
     setInput('');
 
-    // الرد التلقائي — فقط أول مرة
-    if (!autoReplySent) {
-      setAutoReplySent(true);
-      const autoReply = {
-        id: `auto-${Date.now() + 1}`,
-        content: AUTO_REPLY_MESSAGES[lang] || AUTO_REPLY_MESSAGES.ar,
-        sender_id: guideId,
-        created_at: new Date(Date.now() + 1500).toISOString(),
-        is_auto: true,
-      };
+    if (isFirstMessage) {
       setTimeout(() => {
         setMessages((prev) => [...prev, autoReply]);
       }, 1500);
@@ -175,6 +174,10 @@ export default function GuideChatPage() {
       setSending(false);
     }
   };
+
+  if (guideId === 'dashboard') {
+    return null;
+  }
 
   if (loading) {
     return (
