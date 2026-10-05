@@ -1,56 +1,241 @@
-// app/guide/page.js
+// app/guide/[id]/page.js
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useState, useEffect, useRef } from 'react';
+import { useParams, useRouter } from 'next/navigation';
 import { useLanguage } from '@/app/layout';
-import { getGuides } from '@/lib/supabase-client';
+import { supabase, createChatSession } from '@/lib/supabase-client';
 
-export default function GuidePage() {
+const WELCOME_MESSAGES = {
+  ar: 'السلام عليكم! كيف أقدر أساعدك اليوم؟',
+  en: 'Peace be upon you! How can I help you today?',
+  fr: 'Que la paix soit sur vous! Comment puis-je vous aider aujourd\'hui?',
+  ur: 'السلام علیکم! آج میں آپ کی کیسے مدد کر سکتا ہوں؟',
+  id: 'Assalamualaikum! Bagaimana saya bisa membantu Anda hari ini?',
+};
+
+export default function GuideChatPage() {
+  const params = useParams();
   const router = useRouter();
   const { lang, setLang, t } = useLanguage();
-  const [selectedMentor, setSelectedMentor] = useState(null);
-  const [specialtyFilter, setSpecialtyFilter] = useState('all');
-  const [mentors, setMentors] = useState([]);
+
+  const [user, setUser] = useState(null);
+  const [other, setOther] = useState(null);       // الطرف الآخر (المرشد أو المستخدم)
+  const [session, setSession] = useState(null);   // null = لسا ما انفتحت جلسة
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState('');
   const [loading, setLoading] = useState(true);
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState('');
+  const [sendError, setSendError] = useState('');
+  const bottomRef = useRef(null);
 
   const isRTL = lang === 'ar' || lang === 'ur';
+  const routeId = params?.id;
 
+  // true لو اللي فاتح الصفحة هو المرشد صاحب الجلسة
+  const isGuideSide = !!(session && user && session.guide_id === user.id);
+
+  // ───── تحميل الجلسة والرسائل ─────
   useEffect(() => {
+    if (!routeId) return;
+    let cancelled = false;
+
     async function load() {
       try {
-        const filters = {};
-        if (specialtyFilter !== 'all') filters.specialty = specialtyFilter;
-        const data = await getGuides(filters);
-        console.log('[guide-list] Loaded:', data);
-        setMentors(data || []);
+        const { data: { user: me } } = await supabase.auth.getUser();
+        if (!me) {
+          router.push('/login');
+          return;
+        }
+        if (cancelled) return;
+        setUser(me);
+
+        const sessionParam = new URLSearchParams(window.location.search).get('session');
+
+        let sess = null;
+        let otherId = routeId;
+
+        if (sessionParam) {
+          // المرشد جاي من اللوحة: نفتح الجلسة نفسها
+          const { data } = await supabase
+            .from('chat_sessions').select('*').eq('id', sessionParam).maybeSingle();
+          if (!data) {
+            if (!cancelled) setError('Session not found');
+            return;
+          }
+          sess = data;
+          otherId = me.id === data.user_id ? data.guide_id : data.user_id;
+        } else {
+          // المستخدم يفتح شات مع مرشد: نبحث عن جلسة مفتوحة (pending أو active)
+          const { data } = await supabase
+            .from('chat_sessions')
+            .select('*')
+            .eq('user_id', me.id)
+            .eq('guide_id', routeId)
+            .order('created_at', { ascending: false })
+            .limit(1)
+            .maybeSingle();
+          sess = data;
+        }
+
+        const { data: otherProfile } = await supabase
+          .from('profiles').select('*').eq('id', otherId).maybeSingle();
+        if (!otherProfile) {
+          if (!cancelled) setError('Not found');
+          return;
+        }
+        if (cancelled) return;
+        setOther(otherProfile);
+
+        if (sess) {
+          const { data: msgs, error: msgsErr } = await supabase
+            .from('messages')
+            .select('*')
+            .eq('session_id', sess.id)
+            .order('created_at', { ascending: true });
+          if (msgsErr) console.error('[chat] load messages:', msgsErr);
+          if (cancelled) return;
+          setMessages(msgs || []);
+        }
+        setSession(sess);
       } catch (err) {
-        console.error('[guide-list] Error:', err);
+        console.error('[chat] load error:', err);
+        if (!cancelled) setError('Failed to load');
       } finally {
-        setLoading(false);
+        if (!cancelled) setLoading(false);
       }
     }
-    load();
-  }, [specialtyFilter]);
 
-  const getLanguageLabel = (code) => {
-    const labels = {
-      ar: { ar: 'العربية', en: 'Arabic', fr: 'Arabe', ur: 'عربی', id: 'Arab' },
-      en: { ar: 'الإنجليزية', en: 'English', fr: 'Anglais', ur: 'انگریزی', id: 'Inggris' },
-      fr: { ar: 'الفرنسية', en: 'French', fr: 'Français', ur: 'فرانسیسی', id: 'Prancis' },
-      ur: { ar: 'الأردية', en: 'Urdu', fr: 'Ourdou', ur: 'اردو', id: 'Urdu' },
-      id: { ar: 'الإندونيسية', en: 'Indonesian', fr: 'Indonésien', ur: 'انڈونیشیائی', id: 'Indonesia' },
+    load();
+    return () => { cancelled = true; };
+  }, [routeId, router]);
+
+  // ───── الاستقبال الفوري (Realtime) ─────
+  useEffect(() => {
+    if (!session?.id) return;
+
+    const channel = supabase
+      .channel(`messages-${session.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'messages',
+          filter: `session_id=eq.${session.id}`,
+        },
+        (payload) => {
+          setMessages((prev) =>
+            prev.some((m) => m.id === payload.new.id) ? prev : [...prev, payload.new]
+          );
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
     };
-    return labels[code]?.[lang] || code;
+  }, [session?.id]);
+
+  // نزول تلقائي لآخر رسالة
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages.length]);
+
+  // ───── الإرسال ─────
+  const handleSend = async () => {
+    const text = input.trim();
+    if (!text || !user || sending) return;
+    setSending(true);
+    setSendError('');
+
+    try {
+      let sess = session;
+
+      // أول رسالة: ننشئ الجلسة الآن (والسؤال الأول = نص الرسالة)
+      if (!sess) {
+        sess = await createChatSession(user.id, routeId, text, lang);
+        setSession(sess);
+      }
+
+      const { data, error: insertErr } = await supabase
+        .from('messages')
+        .insert({ session_id: sess.id, sender_id: user.id, content: text })
+        .select()
+        .single();
+      if (insertErr) throw insertErr;
+
+      setMessages((prev) => (prev.some((m) => m.id === data.id) ? prev : [...prev, data]));
+      setInput('');
+
+      // لو الجلسة كانت مغلقة، نعيد فتحها كطلب جديد عند المرشد
+      if (sess.status === 'closed' && sess.user_id === user.id) {
+        const { error: reErr } = await supabase
+          .from('chat_sessions').update({ status: 'pending' }).eq('id', sess.id);
+        if (!reErr) {
+          sess = { ...sess, status: 'pending' };
+          setSession(sess);
+        }
+      }
+
+      // لما المرشد يرد على طلب جديد، تتحول الجلسة إلى نشطة
+      if (sess.guide_id === user.id && sess.status === 'pending') {
+        const { error: stErr } = await supabase
+          .from('chat_sessions').update({ status: 'active' }).eq('id', sess.id);
+        if (!stErr) setSession({ ...sess, status: 'active' });
+      }
+    } catch (err) {
+      console.error('[chat] send error:', err);
+      setSendError(err?.message || 'Send failed');
+    } finally {
+      setSending(false);
+    }
   };
+
+  // ───── العرض ─────
+  if (loading) {
+    return (
+      <main dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center">
+        <div className="text-white text-xl">{t.guide.loading}</div>
+      </main>
+    );
+  }
+
+  if (error || !other) {
+    return (
+      <main dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex items-center justify-center p-6">
+        <div className="bg-white rounded-2xl p-8 text-center max-w-md">
+          <div className="text-5xl mb-4">👤</div>
+          <p className="text-slate-800 mb-4 font-bold">{error || 'Not found'}</p>
+          <button onClick={() => router.push('/guide')} className="text-teal-600 hover:underline">
+            ← {t.guide.modal.cancel}
+          </button>
+        </div>
+      </main>
+    );
+  }
+
+  const backTo = isGuideSide ? '/guide/dashboard' : '/guide';
+  const showWelcome = messages.length === 0 && !isGuideSide;
 
   return (
     <main dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex flex-col">
       <header className="bg-teal-900 text-white p-4 flex items-center justify-between shadow-lg">
-        <Link href="/" className="text-2xl">→</Link>
-        <div className="text-xl font-bold">
-          {t.guide.title} <span className="text-amber-400">| Guide</span>
+        <button onClick={() => router.push(backTo)} className="text-2xl">→</button>
+        <div className="flex items-center gap-3 flex-1 justify-center">
+          <div className="w-10 h-10 rounded-full bg-amber-400 text-slate-900 flex items-center justify-center font-bold">
+            {other.avatar_initial || other.name?.[0] || '?'}
+          </div>
+          <div className="text-center">
+            <div className="font-bold">{other.name}</div>
+            <div className="text-xs opacity-80">
+              {other.country}
+              {other.role === 'guide' && other.specialty
+                ? ` · ${t.guide.specialties?.[other.specialty] || other.specialty}`
+                : ''}
+            </div>
+          </div>
         </div>
         <div className="flex gap-1">
           {['ar', 'en', 'fr', 'ur', 'id'].map((l) => (
@@ -67,138 +252,55 @@ export default function GuidePage() {
         </div>
       </header>
 
-      <div className="flex-1 overflow-y-auto p-4">
-        <p className="text-white/80 text-center mb-6 text-sm">{t.guide.subtitle}</p>
-
-        <div className="max-w-2xl mx-auto mb-6">
-          <select
-            value={specialtyFilter}
-            onChange={(e) => setSpecialtyFilter(e.target.value)}
-            className="w-full p-3 rounded-xl border border-white/20 bg-white/10 text-white focus:outline-none focus:border-amber-400"
-          >
-            <option value="all" className="text-slate-800">{t.guide.specialties.all}</option>
-            <option value="family" className="text-slate-800">{t.guide.specialties.family}</option>
-            <option value="psychology" className="text-slate-800">{t.guide.specialties.psychology}</option>
-            <option value="fiqh" className="text-slate-800">{t.guide.specialties.fiqh}</option>
-            <option value="seerah" className="text-slate-800">{t.guide.specialties.seerah}</option>
-          </select>
-        </div>
-
-        <div className="max-w-2xl mx-auto space-y-4">
-          {loading ? (
-            <div className="bg-white rounded-2xl p-6 text-center text-slate-500">
-              {t.guide.loading}
-            </div>
-          ) : mentors.length === 0 ? (
-            <div className="bg-white rounded-2xl p-6 text-center text-slate-600">
-              {t.guide.no_results}
-            </div>
-          ) : (
-            mentors.map((mentor) => (
-              <div key={mentor.id} className="bg-white rounded-2xl p-5 shadow-lg">
-                <div className="flex items-start gap-4 mb-4">
-                  <div className="w-14 h-14 rounded-full bg-teal-600 text-white flex items-center justify-center text-xl font-bold flex-shrink-0">
-                    {mentor.avatar_initial || mentor.name?.[0] || '?'}
-                  </div>
-                  <div className="flex-1">
-                    <div className="font-bold text-lg text-slate-800">{mentor.name}</div>
-                    <div className="text-sm text-slate-500 flex items-center gap-3 mt-1 flex-wrap">
-                      {mentor.country && <span>📍 {mentor.country}</span>}
-                      <span>⭐ {mentor.rating || 5}/5</span>
-                      <span>💬 {mentor.sessions_count || 0} {t.guide.sessions}</span>
-                    </div>
-                  </div>
-                </div>
-
-                {mentor.bio && (
-                  <p className="text-sm text-slate-600 mb-4 leading-relaxed">{mentor.bio}</p>
-                )}
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                  {(mentor.languages || []).map((code, i) => (
-                    <span key={i} className="bg-slate-100 text-teal-700 px-3 py-1 rounded-full text-xs font-medium">
-                      {getLanguageLabel(code)}
-                    </span>
-                  ))}
-                  {mentor.specialty && (
-                    <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-medium">
-                      {t.guide.specialties[mentor.specialty] || mentor.specialty}
-                    </span>
-                  )}
-                </div>
-
-                <button
-                  onClick={() => {
-                    console.log('[guide-list] Selected:', mentor.id);
-                    setSelectedMentor(mentor);
-                  }}
-                  className="w-full bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-bold transition"
-                >
-                  {t.guide.start_chat}
-                </button>
-              </div>
-            ))
-          )}
-        </div>
-
-        <div className="max-w-2xl mx-auto mt-6 bg-white/10 backdrop-blur rounded-2xl p-5 text-white text-sm">
-          <div className="font-bold mb-2">💡 {t.guide.how_it_works}</div>
-          <ul className="list-disc pr-5 space-y-1 opacity-90">
-            {(t.guide.points || []).map((point, i) => (
-              <li key={i}>{point}</li>
-            ))}
-          </ul>
-        </div>
-      </div>
-
-      {selectedMentor && (
-        <div
-          className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedMentor(null)}
-        >
-          <div
-            className="bg-white rounded-2xl p-6 max-w-md w-full"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="text-center mb-6">
-              <div className="w-16 h-16 rounded-full bg-teal-600 text-white flex items-center justify-center text-2xl font-bold mx-auto mb-3">
-                {selectedMentor.avatar_initial || selectedMentor.name?.[0] || '?'}
-              </div>
-              <div className="font-bold text-xl text-slate-800 mb-1">{selectedMentor.name}</div>
-              <div className="text-sm text-slate-500">
-                {selectedMentor.country} · ⭐ {selectedMentor.rating || 5}/5
-              </div>
-              <div className="text-xs text-slate-400 mt-2 font-mono">
-                ID: {selectedMentor.id}
-              </div>
-            </div>
-
-            <div className="bg-slate-50 rounded-xl p-4 mb-5 text-center">
-              <div className="text-sm text-slate-500 mb-2">{t.guide.modal.will_contact}</div>
-              <div className="font-bold text-teal-700">{t.guide.modal.soon}</div>
-            </div>
-
-            <div className="flex gap-3">
-              <button
-                onClick={() => setSelectedMentor(null)}
-                className="flex-1 bg-slate-200 hover:bg-slate-300 text-slate-800 py-3 rounded-xl font-bold transition"
-              >
-                {t.guide.modal.cancel}
-              </button>
-              <button
-                onClick={() => {
-                  const url = `/guide/${selectedMentor.id}`;
-                  console.log('[guide-list] Navigate to:', url);
-                  router.push(url);
-                }}
-                className="flex-1 bg-teal-600 hover:bg-teal-700 text-white py-3 rounded-xl font-bold transition"
-              >
-                {t.guide.modal.confirm}
-              </button>
+      <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {showWelcome && (
+          <div className="max-w-[80%] p-4 rounded-2xl bg-white text-slate-800 ml-auto rounded-br-sm">
+            <div className="text-sm leading-relaxed">
+              {WELCOME_MESSAGES[lang] || WELCOME_MESSAGES.ar}
             </div>
           </div>
+        )}
+
+        {messages.map((msg) => {
+          const isMine = msg.sender_id === user?.id;
+          return (
+            <div
+              key={msg.id}
+              className={`max-w-[80%] p-4 rounded-2xl ${
+                isMine
+                  ? 'bg-teal-500 text-white mr-auto rounded-bl-sm'
+                  : 'bg-white text-slate-800 ml-auto rounded-br-sm'
+              }`}
+            >
+              <div className="text-sm leading-relaxed whitespace-pre-wrap">{msg.content}</div>
+            </div>
+          );
+        })}
+        <div ref={bottomRef} />
+      </div>
+
+      <div className="bg-white p-4 shadow-lg">
+        {sendError && (
+          <div className="text-xs text-red-600 mb-2">⚠️ {sendError}</div>
+        )}
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+            placeholder={t.guide.chat_placeholder}
+            className="flex-1 p-3 border border-slate-300 rounded-xl text-slate-800 focus:outline-none focus:border-teal-500"
+          />
+          <button
+            onClick={handleSend}
+            disabled={sending || !input.trim()}
+            className="bg-teal-600 hover:bg-teal-700 text-white px-6 rounded-xl font-bold disabled:opacity-50"
+          >
+            {t.guide.send}
+          </button>
         </div>
-      )}
+      </div>
     </main>
   );
 }

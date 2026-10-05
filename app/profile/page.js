@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useLanguage } from '@/app/layout';
 import { supabase, getProfile, updateProfile } from '@/lib/supabase-client';
+import { ChartIcon, StarIcon, CommentIcon, GlobeIcon, CalendarIcon, LocationIcon } from '@/lib/icons';
 
 export default function ProfilePage() {
   const router = useRouter();
@@ -240,32 +241,39 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* إحصائيات — للمرشدين */}
+          {/* إحصائيات المرشد */}
           {isGuide && !editing && (
             <div className="bg-white rounded-2xl p-6 shadow-lg">
-              <h3 className="font-bold text-lg text-slate-800 mb-4">
-                📊 {lang === 'ar' ? 'الإحصائيات' : 'Statistics'}
+              <h3 className="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
+                <ChartIcon size={20} className="text-teal-600" />
+                <span>{lang === 'ar' ? 'الإحصائيات' : 'Statistics'}</span>
               </h3>
+
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                 <div className="bg-amber-50 rounded-xl p-4 text-center">
-                  <div className="text-3xl font-bold text-amber-600">
-                    ⭐ {profile?.rating || 5.0}
+                  <div className="text-3xl font-bold text-amber-600 flex items-center justify-center gap-1">
+                    <StarIcon size={26} filled className="text-amber-500" />
+                    <span>{profile?.rating || 5.0}</span>
                   </div>
                   <div className="text-xs text-slate-500 mt-1">
                     {lang === 'ar' ? 'التقييم' : 'Rating'}
                   </div>
                 </div>
+
                 <div className="bg-teal-50 rounded-xl p-4 text-center">
-                  <div className="text-3xl font-bold text-teal-600">
-                    💬 {profile?.sessions_count || 0}
+                  <div className="text-3xl font-bold text-teal-600 flex items-center justify-center gap-1">
+                    <CommentIcon size={26} className="text-teal-600" />
+                    <span>{profile?.sessions_count || 0}</span>
                   </div>
                   <div className="text-xs text-slate-500 mt-1">
                     {t.guide.sessions}
                   </div>
                 </div>
+
                 <div className="bg-slate-50 rounded-xl p-4 text-center">
-                  <div className="text-3xl font-bold text-slate-700">
-                    🌍 {(profile?.languages || []).length}
+                  <div className="text-3xl font-bold text-slate-700 flex items-center justify-center gap-1">
+                    <GlobeIcon size={26} className="text-slate-700" />
+                    <span>{(profile?.languages || []).length}</span>
                   </div>
                   <div className="text-xs text-slate-500 mt-1">
                     {lang === 'ar' ? 'اللغات' : 'Languages'}
@@ -273,11 +281,11 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* اللغات */}
               {profile?.languages && profile.languages.length > 0 && (
                 <div className="mt-4 pt-4 border-t border-slate-200">
-                  <div className="text-xs text-slate-500 mb-2">
-                    🌍 {t.guide.languages_label}:
+                  <div className="text-xs text-slate-500 mb-2 flex items-center gap-2">
+                    <GlobeIcon size={14} />
+                    <span>{t.guide.languages_label}:</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {profile.languages.map((code, i) => (
@@ -289,10 +297,10 @@ export default function ProfilePage() {
                 </div>
               )}
 
-              {/* تاريخ الانضمام */}
               {memberSince && (
-                <div className="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500">
-                  📅 {lang === 'ar' ? 'عضو منذ' : 'Member since'}: {memberSince}
+                <div className="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500 flex items-center gap-2">
+                  <CalendarIcon size={14} />
+                  <span>{lang === 'ar' ? 'عضو منذ' : 'Member since'}: {memberSince}</span>
                 </div>
               )}
             </div>
@@ -301,7 +309,9 @@ export default function ProfilePage() {
           {/* الموقع */}
           {!editing && profile?.country && (
             <div className="bg-white rounded-2xl p-4 shadow-lg flex items-center gap-3">
-              <div className="text-2xl">📍</div>
+              <div className="text-teal-600">
+                <LocationIcon size={28} />
+              </div>
               <div>
                 <div className="text-xs text-slate-500">{t.profile.country}</div>
                 <div className="font-bold text-slate-800">{profile.country}</div>
