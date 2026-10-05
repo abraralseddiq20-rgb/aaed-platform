@@ -1,9 +1,11 @@
 const fs = require('fs');
 
-const MODEL = 'gemini-embedding-2';
+const MODEL = 'gemini-embedding-001';
 const DIMS = 768;
 const BATCH_SIZE = 20;
-const PAUSE_MS = 1500;
+const PAUSE_MS = 13000;
+const MINUTE_WAIT_MS = 40000;
+const MAX_MINUTE_RETRIES = 10;
 
 function arg(name, def) {
   const a = process.argv.find((x) => x.startsWith(`--${name}=`));
@@ -12,6 +14,8 @@ function arg(name, def) {
 
 const INPUT = arg('input', 'data/hadith.json');
 const OUTPUT = arg('output', 'data/hadith.embeddings.json');
+const TEXT_FIELD = arg('text-field', 'text');
+const KEYS = arg('keys', 'book,number').split(',');
 const NO_RESUME = process.argv.includes('--no-resume');
 
 function loadKey() {
@@ -35,7 +39,10 @@ async function generateBatch(texts, apiKey) {
     outputDimensionality: DIMS,
   }));
 
-  for (let attempt = 1; attempt <= 3; attempt++) {
+  let minuteRetries = 0;
+  let serverRetries = 0;
+
+  while (true) {
     const res = await fetch(
       `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:batchEmbedContents`,
       {
@@ -51,53 +58,80 @@ async function generateBatch(texts, apiKey) {
     }
 
     const body = await res.text();
-    console.error(`\nHTTP ${res.status}:`, body.slice(0, 500));
 
     if (res.status === 429) {
-      const err = new Error('QUOTA');
-      err.quota = true;
-      throw err;
-    }
-    if (res.status >= 500 && attempt < 3) {
-      await sleep(3000 * attempt);
+      if (/PerDay|per day/i.test(body)) {
+        console.error('\nHTTP 429:', body.slice(0, 500));
+        const err = new Error('DAILY_QUOTA');
+        err.daily = true;
+        throw err;
+      }
+      minuteRetries++;
+      if (minuteRetries > MAX_MINUTE_RETRIES) {
+        console.error('\nHTTP 429 متكرر:', body.slice(0, 500));
+        throw new Error('429 متكرر');
+      }
+      console.log(`⏳ حد الدقيقة، انتظار ${MINUTE_WAIT_MS / 1000} ثانية (محاولة ${minuteRetries})...`);
+      await sleep(MINUTE_WAIT_MS);
       continue;
     }
+
+    if (res.status >= 500 && serverRetries < 3) {
+      serverRetries++;
+      console.log(`⚠️ خطأ خادم ${res.status}، إعادة المحاولة...`);
+      await sleep(3000 * serverRetries);
+      continue;
+    }
+
+    console.error(`\nHTTP ${res.status}:`, body.slice(0, 500));
     throw new Error(`HTTP ${res.status}`);
   }
 }
 
 (async () => {
   console.log('🚀 بدء توليد Embeddings...');
+  console.log(`الموديل: ${MODEL} (${DIMS} بُعدًا) | الحقل: ${TEXT_FIELD} | المفاتيح: ${KEYS.join(',')}`);
   const apiKey = loadKey();
   console.log('✅ GEMINI_API_KEY مُحمَّل');
 
-  const hadiths = JSON.parse(fs.readFileSync(INPUT, 'utf8'));
-  console.log(`📖 إجمالي الأحاديث: ${hadiths.length}`);
+  const items = JSON.parse(fs.readFileSync(INPUT, 'utf8'));
+  console.log(`📖 الإجمالي: ${items.length}`);
 
   let results = [];
   if (!NO_RESUME && fs.existsSync(OUTPUT)) {
     results = JSON.parse(fs.readFileSync(OUTPUT, 'utf8'));
-    console.log(`↩️ استئناف من الحديث رقم ${results.length}`);
+    console.log(`↩️ استئناف من العنصر رقم ${results.length}`);
   }
 
-  for (let i = results.length; i < hadiths.length; i += BATCH_SIZE) {
-    const slice = hadiths.slice(i, i + BATCH_SIZE);
+  let sinceSave = 0;
+  const save = () => fs.writeFileSync(OUTPUT, JSON.stringify(results), { encoding: 'utf8' });
+
+  for (let i = results.length; i < items.length; i += BATCH_SIZE) {
+    const slice = items.slice(i, i + BATCH_SIZE);
     try {
-      const vectors = await generateBatch(slice.map((h) => h.text), apiKey);
+      const vectors = await generateBatch(slice.map((h) => h[TEXT_FIELD]), apiKey);
       slice.forEach((h, k) => {
-        results.push({ book: h.book, number: h.number, embedding: vectors[k] });
+        const row = {};
+        KEYS.forEach((key) => { row[key] = h[key]; });
+        row.embedding = vectors[k];
+        results.push(row);
       });
-      fs.writeFileSync(OUTPUT, JSON.stringify(results), { encoding: 'utf8' });
-      console.log(`✅ ${results.length} / ${hadiths.length}`);
+      sinceSave += slice.length;
+      if (sinceSave >= 100 || i + BATCH_SIZE >= items.length) {
+        save();
+        sinceSave = 0;
+      }
+      console.log(`✅ ${results.length} / ${items.length}`);
     } catch (err) {
-      if (err.quota) {
-        console.error('\n⏸️ انتهت الحصة اليومية. شغّلي السكربت لاحقًا بدون --no-resume لتكملي.');
+      save();
+      if (err.daily) {
+        console.error('\n⏸️ انتهت الحصة اليومية. شغّلي السكربت لاحقًا (بدون --no-resume) لتكملي.');
       } else {
-        console.error(`\n❌ خطأ عند الحديث ${i}: ${err.message}`);
+        console.error(`\n❌ خطأ عند العنصر ${i}: ${err.message}`);
       }
       process.exit(1);
     }
-    await sleep(PAUSE_MS);
+    if (i + BATCH_SIZE < items.length) await sleep(PAUSE_MS);
   }
 
   console.log(`\n🎉 تم! الملف: ${OUTPUT}`);

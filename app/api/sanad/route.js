@@ -10,7 +10,7 @@ const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const SUPABASE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const GEMINI_BASE = 'https://generativelanguage.googleapis.com/v1beta/models';
-const EMBED_MODEL = 'gemini-embedding-2';
+const EMBED_MODEL = 'gemini-embedding-001';
 const EMBED_DIMS = 768;
 const CHAT_MODEL = process.env.GEMINI_CHAT_MODEL || 'gemini-2.5-flash';
 
