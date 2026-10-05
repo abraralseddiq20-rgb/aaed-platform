@@ -9,14 +9,21 @@ import { supabase } from '@/lib/supabase-client';
 export default function Home() {
   const { lang, setLang, t } = useLanguage();
   const [user, setUser] = useState(null);
+  const [profile, setProfile] = useState(null);
 
   useEffect(() => {
-    // جلب المستخدم الحالي
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(async ({ data }) => {
       setUser(data.user);
+      if (data.user) {
+        const { data: prof } = await supabase
+          .from('profiles')
+          .select('role, name, avatar_initial')
+          .eq('id', data.user.id)
+          .maybeSingle();
+        setProfile(prof);
+      }
     });
 
-    // الاستماع لتغييرات المصادقة
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
@@ -25,6 +32,7 @@ export default function Home() {
   }, []);
 
   const isRTL = lang === 'ar' || lang === 'ur';
+  const isGuide = profile?.role === 'guide';
 
   return (
     <main
@@ -33,7 +41,7 @@ export default function Home() {
     >
       <div className="text-center text-white max-w-3xl w-full">
         
-        {/* الشريط العلوي: اللغات + Auth */}
+        {/* الشريط العلوي */}
         <div className="flex justify-between items-center mb-8 flex-wrap gap-3">
           <div className="flex gap-2">
             {['ar', 'en', 'fr', 'ur', 'id'].map((l) => (
@@ -41,9 +49,7 @@ export default function Home() {
                 key={l}
                 onClick={() => setLang(l)}
                 className={`px-3 py-1 rounded-full text-xs font-bold transition ${
-                  lang === l
-                    ? 'bg-amber-400 text-slate-900'
-                    : 'bg-white/10 hover:bg-white/20'
+                  lang === l ? 'bg-amber-400 text-slate-900' : 'bg-white/10 hover:bg-white/20'
                 }`}
               >
                 {l.toUpperCase()}
@@ -89,7 +95,28 @@ export default function Home() {
           </div>
         </div>
 
-        {/* العنوان الرئيسي */}
+        {/* بطاقة المرشد — تظهر للمرشدين فقط */}
+        {isGuide && (
+          <Link
+            href="/guide/dashboard"
+            className="block bg-amber-400 hover:bg-amber-500 text-slate-900 rounded-2xl p-5 mb-8 transition shadow-lg"
+          >
+            <div className="flex items-center gap-4 justify-center">
+              <div className="text-3xl">👨‍🏫</div>
+              <div className="text-right">
+                <div className="font-bold text-lg">
+                  {t.guide_dashboard.title}
+                </div>
+                <div className="text-xs opacity-80">
+                  {t.guide_dashboard.pending_requests} · {t.guide_dashboard.active_sessions}
+                </div>
+              </div>
+              <div className="text-2xl">→</div>
+            </div>
+          </Link>
+        )}
+
+        {/* العنوان */}
         <h1 className="text-5xl md:text-6xl font-bold mb-4">
           {t.home.title} <span className="text-amber-400">|</span>{' '}
           <span className="text-amber-400">Aaed</span>

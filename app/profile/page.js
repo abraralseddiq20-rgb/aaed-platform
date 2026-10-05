@@ -19,15 +19,22 @@ export default function ProfilePage() {
 
   const isRTL = lang === 'ar' || lang === 'ur';
 
+  const getLanguageLabel = (code) => {
+    const labels = {
+      ar: { ar: 'العربية', en: 'Arabic', fr: 'Arabe', ur: 'عربی', id: 'Arab' },
+      en: { ar: 'الإنجليزية', en: 'English', fr: 'Anglais', ur: 'انگریزی', id: 'Inggris' },
+      fr: { ar: 'الفرنسية', en: 'French', fr: 'Français', ur: 'فرانسیسی', id: 'Prancis' },
+      ur: { ar: 'الأردية', en: 'Urdu', fr: 'Ourdou', ur: 'اردو', id: 'Urdu' },
+      id: { ar: 'الإندونيسية', en: 'Indonesian', fr: 'Indonésien', ur: 'انڈونیشیائی', id: 'Indonesia' },
+    };
+    return labels[code]?.[lang] || code;
+  };
+
   useEffect(() => {
     let cancelled = false;
 
-    // Timeout 8 ثواني
     const timeout = setTimeout(() => {
-      if (!cancelled && loading) {
-        console.warn('[profile] timeout — redirecting to login');
-        router.push('/login');
-      }
+      if (!cancelled && loading) router.push('/login');
     }, 8000);
 
     async function load() {
@@ -102,6 +109,14 @@ export default function ProfilePage() {
 
   if (!user) return null;
 
+  const isGuide = profile?.role === 'guide';
+  const memberSince = profile?.created_at
+    ? new Date(profile.created_at).toLocaleDateString(
+        lang === 'ar' ? 'ar-EG' : 'en-US',
+        { year: 'numeric', month: 'long' }
+      )
+    : '';
+
   return (
     <main dir={isRTL ? 'rtl' : 'ltr'} className="min-h-screen bg-gradient-to-br from-teal-600 to-teal-800 flex flex-col">
       <header className="bg-teal-900 text-white p-4 flex items-center justify-between shadow-lg">
@@ -126,6 +141,8 @@ export default function ProfilePage() {
 
       <div className="flex-1 overflow-y-auto p-4">
         <div className="max-w-2xl mx-auto space-y-4">
+
+          {/* بطاقة الملف */}
           <div className="bg-white rounded-2xl p-6 shadow-lg">
             <div className="flex items-start gap-4 mb-6">
               <div className="w-20 h-20 rounded-full bg-teal-600 text-white flex items-center justify-center text-3xl font-bold flex-shrink-0">
@@ -136,9 +153,16 @@ export default function ProfilePage() {
                   <>
                     <h2 className="font-bold text-2xl text-slate-800">{profile?.name || 'User'}</h2>
                     <p className="text-sm text-slate-500">{user?.email}</p>
-                    <span className="inline-block mt-2 bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-medium">
-                      {t.profile.roles[profile?.role] || t.profile.roles.user}
-                    </span>
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      <span className="bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-medium">
+                        {t.profile.roles[profile?.role] || t.profile.roles.user}
+                      </span>
+                      {isGuide && profile?.specialty && (
+                        <span className="bg-amber-100 text-amber-700 px-3 py-1 rounded-full text-xs font-medium">
+                          {t.guide.specialties[profile.specialty] || profile.specialty}
+                        </span>
+                      )}
+                    </div>
                   </>
                 ) : (
                   <div className="space-y-3">
@@ -215,6 +239,76 @@ export default function ProfilePage() {
               )}
             </div>
           </div>
+
+          {/* إحصائيات — للمرشدين */}
+          {isGuide && !editing && (
+            <div className="bg-white rounded-2xl p-6 shadow-lg">
+              <h3 className="font-bold text-lg text-slate-800 mb-4">
+                📊 {lang === 'ar' ? 'الإحصائيات' : 'Statistics'}
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
+                <div className="bg-amber-50 rounded-xl p-4 text-center">
+                  <div className="text-3xl font-bold text-amber-600">
+                    ⭐ {profile?.rating || 5.0}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">
+                    {lang === 'ar' ? 'التقييم' : 'Rating'}
+                  </div>
+                </div>
+                <div className="bg-teal-50 rounded-xl p-4 text-center">
+                  <div className="text-3xl font-bold text-teal-600">
+                    💬 {profile?.sessions_count || 0}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">
+                    {t.guide.sessions}
+                  </div>
+                </div>
+                <div className="bg-slate-50 rounded-xl p-4 text-center">
+                  <div className="text-3xl font-bold text-slate-700">
+                    🌍 {(profile?.languages || []).length}
+                  </div>
+                  <div className="text-xs text-slate-500 mt-1">
+                    {lang === 'ar' ? 'اللغات' : 'Languages'}
+                  </div>
+                </div>
+              </div>
+
+              {/* اللغات */}
+              {profile?.languages && profile.languages.length > 0 && (
+                <div className="mt-4 pt-4 border-t border-slate-200">
+                  <div className="text-xs text-slate-500 mb-2">
+                    🌍 {t.guide.languages_label}:
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {profile.languages.map((code, i) => (
+                      <span key={i} className="bg-teal-100 text-teal-700 px-3 py-1 rounded-full text-xs font-medium">
+                        {getLanguageLabel(code)}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* تاريخ الانضمام */}
+              {memberSince && (
+                <div className="mt-4 pt-4 border-t border-slate-200 text-xs text-slate-500">
+                  📅 {lang === 'ar' ? 'عضو منذ' : 'Member since'}: {memberSince}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* الموقع */}
+          {!editing && profile?.country && (
+            <div className="bg-white rounded-2xl p-4 shadow-lg flex items-center gap-3">
+              <div className="text-2xl">📍</div>
+              <div>
+                <div className="text-xs text-slate-500">{t.profile.country}</div>
+                <div className="font-bold text-slate-800">{profile.country}</div>
+              </div>
+            </div>
+          )}
+
         </div>
       </div>
     </main>
