@@ -73,7 +73,6 @@ export default function GuideChatPage() {
             .select('*')
             .eq('user_id', me.id)
             .eq('guide_id', routeId)
-            .in('status', ['pending', 'active'])
             .order('created_at', { ascending: false })
             .limit(1)
             .maybeSingle();
@@ -139,6 +138,14 @@ export default function GuideChatPage() {
     };
   }, [session?.id]);
 
+  // نسجّل آخر رسالة شوفناها (عشان علامة "رد جديد" تختفي بعد القراءة)
+  useEffect(() => {
+    if (!session?.id || messages.length === 0) return;
+    try {
+      localStorage.setItem(`seen_${session.id}`, messages[messages.length - 1].created_at);
+    } catch {}
+  }, [session?.id, messages]);
+
   // نزول تلقائي لآخر رسالة
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -169,6 +176,16 @@ export default function GuideChatPage() {
 
       setMessages((prev) => (prev.some((m) => m.id === data.id) ? prev : [...prev, data]));
       setInput('');
+
+      // لو الجلسة كانت مغلقة، نعيد فتحها كطلب جديد عند المرشد
+      if (sess.status === 'closed' && sess.user_id === user.id) {
+        const { error: reErr } = await supabase
+          .from('chat_sessions').update({ status: 'pending' }).eq('id', sess.id);
+        if (!reErr) {
+          sess = { ...sess, status: 'pending' };
+          setSession(sess);
+        }
+      }
 
       // لما المرشد يرد على طلب جديد، تتحول الجلسة إلى نشطة
       if (sess.guide_id === user.id && sess.status === 'pending') {
