@@ -15,7 +15,7 @@
   "auth": {
     "login_title": "تسجيل الدخول",
     "signup_title": "حساب جديد",
-    "login_subtitle": "سجّل دخولك للمتابعة",
+    "login_subtitle": "سجل دخولك للمتابعة",
     "signup_subtitle": "انضم إلى رحلة العودة",
     "name": "الاسم",
     "name_placeholder": "اسمك الكامل",
@@ -30,32 +30,32 @@
     "no_account": "ليس لديك حساب؟",
     "have_account": "لديك حساب؟",
     "create_account": "أنشئ حساباً",
-    "login_link": "سجّل دخولك",
-    "back_home": "← الرجوع للرئيسية",
-    "signup_success": "تم إنشاء حسابك!",
-    "signup_success_msg": "سيتم تحويلك لصفحة الدخول...",
-    "password_too_short": "كلمة المرور يجب أن تكون 6 أحرف على الأقل",
+    "login_link": "سجل دخولك",
+    "back_home": "الرجوع للرئيسية",
+    "signup_success": "تم إنشاء حسابك",
+    "signup_success_msg": "سيتم تحويلك لمنصة الدخول",
+    "password_too_short": "كلمة المرور 6 أحرف على الأقل",
     "forgot_password": "نسيت كلمة المرور؟",
     "forgot_password_title": "استعادة كلمة المرور",
     "forgot_password_subtitle": "أدخل بريدك الإلكتروني وسنرسل لك رابط لإعادة التعيين",
     "send_reset_link": "إرسال رابط الاستعادة",
-    "back_to_login": "← الرجوع لتسجيل الدخول",
-    "reset_sent_title": "تم إرسال الرابط!",
-    "reset_sent_desc": "تفقد بريدك الإلكتروني — ستجد رسالة فيها رابط لإعادة تعيين كلمة المرور.",
-    "spam_note": "لم تجد الرسالة؟ تفقد مجلد Spam.",
+    "back_to_login": "الرجوع لتسجيل الدخول",
+    "reset_sent_title": "تم إرسال الرابط",
+    "reset_sent_desc": "ستجد رسالة فيها رابط لإعادة تعيين كلمة المرور",
+    "spam_note": "لم تجد الرسالة؟ تفقد مجلد Spam",
     "new_password_title": "كلمة مرور جديدة",
     "new_password_subtitle": "أدخل كلمة المرور الجديدة",
     "new_password_label": "كلمة المرور الجديدة",
     "confirm_password_label": "تأكيد كلمة المرور",
     "confirm_password_placeholder": "أعد كتابتها",
     "update_password": "تحديث كلمة المرور",
-    "password_updated_title": "تم تحديث كلمة المرور!",
-    "password_updated_desc": "سيتم تحويلك لصفحة الدخول...",
-    "passwords_not_match": "كلمتا المرور غير متطابقتين"
+    "password_updated_title": "تم تحديث كلمة المرور",
+    "password_updated_desc": "سيتم تحويلك لصفحة الدخول",
+    "passwords_not_match": "كلمات المرور غير متطابقة"
   },
   "guide": {
     "title": "المرشد",
-    "subtitle": "اختر مرشدك المفضل — سيتواصل معك في أقرب وقت",
+    "subtitle": "سيتم التواصل معك في أقرب وقت",
     "choose_specialty": "اختر نوع الحاجة",
     "specialties": {
       "all": "الكل",
@@ -72,20 +72,20 @@
       "تحجز جلسة مع المرشد المناسب",
       "يتواصل معك في أقرب وقت",
       "المحادثة سرية تماماً",
-      "المرشدون متطوعون مدرَّبون"
+      "المرشدون متطوعون مدربون"
     ],
     "modal": {
-      "will_contact": "سيتواصل معك",
+      "will_contact": "سيتم التواصل معك",
       "soon": "في أقرب وقت",
       "cancel": "إلغاء",
       "confirm": "تأكيد الحجز"
     },
-    "no_results": "لا يوجد مرشد يطابق بحثك. جرّب تغيير الفلاتر.",
+    "no_results": "لا يوجد مرشد يطابق بحثك. جرب تغيير الفلتر",
     "login_required": "يجب تسجيل الدخول للتواصل مع المرشد",
-    "welcome_message": "السلام عليكم! أنا {name}، سأساعدك في {specialty}. كيف أقدر أساعدك؟",
-    "chat_placeholder": "اكتب رسالتك...",
+    "welcome_message": "السلام عليكم! أنا {name}. سأساعدك في {specialty}. كيف أقدم لك المساعدة؟",
+    "chat_placeholder": "اكتب رسالتك",
     "send": "إرسال",
-    "loading": "جاري التحميل..."
+    "loading": "جاري التحميل"
   },
   "community": {
     "title": "المجتمع",
@@ -101,7 +101,7 @@
     "write_comment": "اكتب تعليقاً...",
     "send": "إرسال",
     "loading": "جاري التحميل...",
-    "no_posts": "لا توجد منشورات بعد. كن أول من يشارك!",
+    "no_posts": "لا توجد منشورات بعد. كن أول من يشارك",
     "reply": "رد",
     "share": "مشاركة",
     "edit": "تعديل",
@@ -113,15 +113,15 @@
     "translate_note": "سيتم ترجمة منشورك تلقائياً لجميع اللغات",
     "copy_link": "نسخ الرابط",
     "send_in_message": "إرسال في رسالة",
-    "add_note": "أضف تعليقاً (اختياري)...",
+    "add_note": "(اختياري) أضف تعليقاً...",
     "back": "رجوع",
     "user_posts": "منشورات المستخدم",
     "profile_not_found": "المستخدم غير موجود",
     "time_ago": {
       "now": "الآن",
-      "min": " د",
-      "hour": " س",
-      "day": " ي"
+      "min": "د",
+      "hour": "س",
+      "day": "ي"
     },
     "categories": {
       "all": "الكل",
@@ -135,13 +135,16 @@
   },
   "library": {
     "title": "المكتبة",
-    "subtitle": "محتوى موثّق من مصادر معتمدة",
-    "notice": "هذا النظام مدعوم بالذكاء الاصطناعي ولا يغني عن المختص.",
+    "subtitle": "محتوى موثق من مصادر معتمدة",
+    "notice": "هذا النظام مدعوم بالذكاء الاصطناعي ولا يغني عن المختص",
+    "search_placeholder": "ابحث في المكتبة...",
+    "search_results": "نتائج البحث",
+    "search_no_results": "لا توجد نتائج",
     "levels": {
       "all": "الكل",
       "seeker": "الباحث",
       "returner": "العائد",
-      "learner": "المتعلّم",
+      "learner": "المتعلم",
       "scholar": "المعلم الشرعي"
     },
     "levels_desc": {
@@ -170,13 +173,15 @@
     "coming_soon": "قريبًا",
     "source": "المصدر",
     "back": "رجوع",
-    "read_more": "اقرأ المزيد",
+    "original_link": "الرابط الأصلي",
+    "content_coming_soon": "المحتوى الكامل هيُضاف قريبًا. يمكنك قراءته الآن من المصدر الأصلي:",
+    "ask_sanad": "اسأل سند",
+    "read_more": "اقرأ المزيد في",
     "minutes": "د",
     "loading": "جاري التحميل...",
     "error": "حدث خطأ",
     "empty": "لا يوجد محتوى في هذا التصنيف بعد",
-    "draft_notice": "مسودة قيد المراجعة",
-    "original_link": "الرابط الأصلي"
+    "draft_notice": "مسودة قيد المراجعة"
   },
   "profile": {
     "title": "ملفي الشخصي",
@@ -196,7 +201,7 @@
     "logout": "تسجيل خروج",
     "my_sessions": "جلساتي",
     "no_sessions": "لا توجد جلسات بعد",
-    "loading": "جاري التحميل..."
+    "loading": "جاري التحميل"
   },
   "guide_dashboard": {
     "title": "لوحة المرشد",
@@ -212,9 +217,9 @@
     "open": "فتح",
     "close": "إغلاق",
     "reply": "رد",
-    "type_message": "اكتب رسالتك...",
+    "type_message": "اكتب رسالتك",
     "send": "إرسال",
-    "loading": "جاري التحميل..."
+    "loading": "جاري التحميل"
   },
   "sanad": {
     "title": "سند",

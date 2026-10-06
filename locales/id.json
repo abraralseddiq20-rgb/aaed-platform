@@ -2,7 +2,7 @@
   "home": {
     "title": "Aaed",
     "slogan": "Pendamping Anda dalam perjalanan kembali",
-    "description": "Platform sosial multilingual yang mempertemukan para mualaf dan mereka yang kembali kepada Islam dalam lingkungan digital yang aman",
+    "description": "Platform sosial multibahasa yang mempertemukan para mualaf dan mereka yang kembali kepada Islam dalam lingkungan digital yang aman",
     "sanad": "Sanad — Asisten Cerdas",
     "guide": "Pembimbing — Dukungan Insani",
     "community": "Komunitas — Mereka yang Kembali",
@@ -31,7 +31,7 @@
     "have_account": "Sudah punya akun?",
     "create_account": "Buat akun",
     "login_link": "Masuk",
-    "back_home": "← Kembali ke beranda",
+    "back_home": "Kembali ke beranda",
     "signup_success": "Akun berhasil dibuat!",
     "signup_success_msg": "Mengarahkan ke login...",
     "password_too_short": "Kata sandi minimal 6 karakter",
@@ -39,9 +39,9 @@
     "forgot_password_title": "Reset Kata Sandi",
     "forgot_password_subtitle": "Masukkan email Anda dan kami akan mengirim tautan reset",
     "send_reset_link": "Kirim Tautan Reset",
-    "back_to_login": "← Kembali ke login",
+    "back_to_login": "Kembali ke login",
     "reset_sent_title": "Tautan terkirim!",
-    "reset_sent_desc": "Periksa email Anda — Anda akan menemukan tautan untuk mengatur ulang kata sandi.",
+    "reset_sent_desc": "Periksa email Anda - Anda akan menemukan tautan untuk mengatur ulang kata sandi.",
     "spam_note": "Tidak melihatnya? Periksa folder Spam.",
     "new_password_title": "Kata Sandi Baru",
     "new_password_subtitle": "Masukkan kata sandi baru Anda",
@@ -137,6 +137,9 @@
     "title": "Perpustakaan",
     "subtitle": "Konten terverifikasi dari sumber terpercaya",
     "notice": "Sistem ini didukung AI dan tidak menggantikan seorang ahli.",
+    "search_placeholder": "Cari di perpustakaan...",
+    "search_results": "Hasil pencarian",
+    "search_no_results": "Tidak ada hasil ditemukan",
     "levels": {
       "all": "Semua",
       "seeker": "Pencari",
@@ -145,10 +148,10 @@
       "scholar": "Cendekiawan"
     },
     "levels_desc": {
-      "seeker": "Untuk non-Muslim yang menjelajahi dan mempelajari Islam",
-      "returner": "Untuk Muslim yang kembali berkomitmen setelah kelalaian",
-      "learner": "Segera hadir — bagi Muslim yang ingin memperdalam",
-      "scholar": "Segera hadir — untuk guru spesialis"
+      "seeker": "Untuk non-Muslim yang menjelajahi Islam",
+      "returner": "Untuk Muslim yang kembali berkomitmen",
+      "learner": "Segera hadir - bagi yang ingin memperdalam",
+      "scholar": "Segera hadir - untuk guru spesialis"
     },
     "content_types": {
       "lesson": "Pelajaran",
@@ -170,13 +173,15 @@
     "coming_soon": "Segera hadir",
     "source": "Sumber",
     "back": "Kembali",
-    "read_more": "Baca selengkapnya",
+    "original_link": "Tautan asli",
+    "content_coming_soon": "Konten lengkap segera hadir. Anda dapat membacanya sekarang di sumber asli:",
+    "ask_sanad": "Tanya Sanad",
+    "read_more": "Baca selengkapnya di",
     "minutes": "mnt",
     "loading": "Memuat...",
     "error": "Terjadi kesalahan",
     "empty": "Belum ada konten di kategori ini",
-    "draft_notice": "Draf dalam peninjauan",
-    "original_link": "Tautan asli"
+    "draft_notice": "Draf dalam peninjauan"
   },
   "profile": {
     "title": "Profil Saya",

@@ -31,7 +31,7 @@
     "have_account": "Have an account?",
     "create_account": "Create one",
     "login_link": "Login",
-    "back_home": "← Back to home",
+    "back_home": "Back to home",
     "signup_success": "Account created!",
     "signup_success_msg": "Redirecting to login...",
     "password_too_short": "Password must be at least 6 characters",
@@ -39,9 +39,9 @@
     "forgot_password_title": "Reset Password",
     "forgot_password_subtitle": "Enter your email and we'll send you a reset link",
     "send_reset_link": "Send Reset Link",
-    "back_to_login": "← Back to Login",
+    "back_to_login": "Back to Login",
     "reset_sent_title": "Link Sent!",
-    "reset_sent_desc": "Check your email — you'll find a link to reset your password.",
+    "reset_sent_desc": "Check your email - you'll find a link to reset your password.",
     "spam_note": "Don't see it? Check your Spam folder.",
     "new_password_title": "New Password",
     "new_password_subtitle": "Enter your new password",
@@ -55,7 +55,7 @@
   },
   "guide": {
     "title": "The Guide",
-    "subtitle": "Choose your preferred guide — they will contact you soon",
+    "subtitle": "Choose your preferred guide - they will contact you soon",
     "choose_specialty": "Choose the type of need",
     "specialties": {
       "all": "All",
@@ -137,6 +137,9 @@
     "title": "The Library",
     "subtitle": "Verified content from trusted sources",
     "notice": "This system is AI-assisted and does not replace a specialist.",
+    "search_placeholder": "Search library...",
+    "search_results": "Search results",
+    "search_no_results": "No results found",
     "levels": {
       "all": "All",
       "seeker": "Seeker",
@@ -145,10 +148,10 @@
       "scholar": "Scholar"
     },
     "levels_desc": {
-      "seeker": "For non-Muslims exploring and learning about Islam",
-      "returner": "For Muslims returning to commitment after a lapse",
-      "learner": "Coming soon — for Muslims seeking depth",
-      "scholar": "Coming soon — for specialized teachers"
+      "seeker": "For non-Muslims exploring Islam",
+      "returner": "For Muslims returning to commitment",
+      "learner": "Coming soon - for those seeking depth",
+      "scholar": "Coming soon - for specialized teachers"
     },
     "content_types": {
       "lesson": "Lessons",
@@ -170,13 +173,15 @@
     "coming_soon": "Coming soon",
     "source": "Source",
     "back": "Back",
-    "read_more": "Read more",
+    "original_link": "Original link",
+    "content_coming_soon": "Full content coming soon. You can read it now at the original source:",
+    "ask_sanad": "Ask Sanad",
+    "read_more": "Read more at",
     "minutes": "min",
     "loading": "Loading...",
     "error": "An error occurred",
     "empty": "No content in this category yet",
-    "draft_notice": "Draft under review",
-    "original_link": "Original link"
+    "draft_notice": "Draft under review"
   },
   "profile": {
     "title": "My Profile",
